@@ -73,7 +73,7 @@ export function Analytics({ girls }: AnalyticsProps) {
       .slice(0, 10);
   }, [girls]);
 
-  if (girls.length === 0 || girls.every((g) => g.entryCount === 0)) {
+  if (girls.length === 0) {
     return (
       <div className="space-y-6">
         <div>
@@ -83,8 +83,29 @@ export function Analytics({ girls }: AnalyticsProps) {
 
         <div className="card-cpn text-center py-12">
           <BarChart3 size={64} className="mx-auto mb-4 text-cpn-gray" />
-          <h3 className="text-xl mb-2">No data yet</h3>
-          <p className="text-cpn-gray">Add girls and data entries to see analytics</p>
+          <h3 className="text-xl mb-2">No profiles yet</h3>
+          <p className="text-cpn-gray">Add your first girl to get started</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (girls.every((g) => g.entryCount === 0)) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h2 className="text-3xl mb-2">Analytics</h2>
+          <p className="text-cpn-gray">Visualize your relationship efficiency data</p>
+        </div>
+
+        <div className="card-cpn text-center py-12">
+          <BarChart3 size={64} className="mx-auto mb-4 text-cpn-gray" />
+          <h3 className="text-xl mb-2">No data entries yet</h3>
+          <p className="text-cpn-gray">
+            You have {girls.length} {girls.length === 1 ? 'profile' : 'profiles'}, but no data entries yet.
+            <br />
+            Add data entries to see analytics and insights.
+          </p>
         </div>
       </div>
     );
