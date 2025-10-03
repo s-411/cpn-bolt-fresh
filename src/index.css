@@ -3,16 +3,18 @@
 @tailwind utilities;
 
 @font-face {
-  font-family: 'National2Condensed';
+  font-family: 'National 2 Condensed';
   src: url('/fonts/National-2-Condensed-Bold.ttf') format('truetype');
   font-weight: bold;
+  font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: 'ESKlarheit';
+  font-family: 'ES Klarheit Grotesk';
   src: url('/fonts/ESKlarheitGrotesk-Rg.otf') format('opentype');
   font-weight: normal;
+  font-style: normal;
   font-display: swap;
 }
 
@@ -27,11 +29,11 @@
 @layer base {
   body {
     @apply bg-[var(--color-cpn-dark)] text-[var(--color-cpn-white)];
-    font-family: 'ESKlarheit', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-family: 'ES Klarheit Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'National2Condensed', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-family: 'National 2 Condensed', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     font-weight: bold;
   }
 }
@@ -160,7 +162,7 @@
 
   .stat-card-value {
     @apply text-3xl font-bold text-[var(--color-cpn-yellow)];
-    font-family: 'National2Condensed', sans-serif;
+    font-family: 'National 2 Condensed', sans-serif;
   }
 
   .stat-card-label {
