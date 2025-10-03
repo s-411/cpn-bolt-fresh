@@ -3,6 +3,7 @@ import { Users, TrendingUp, Settings, BarChart3, Plus, CreditCard as Edit, Trash
 import { AuthProvider, useAuth } from './lib/context/AuthContext';
 import { SignIn } from './pages/SignIn';
 import { SignUp } from './pages/SignUp';
+import { Dashboard } from './pages/Dashboard';
 import { Overview } from './pages/Overview';
 import { GirlDetail } from './pages/GirlDetail';
 import { Analytics } from './pages/Analytics';
@@ -245,13 +246,7 @@ function AppContent() {
             {activeView === 'dashboard' && (
               <Dashboard
                 girls={girls}
-                activeGirls={activeGirls}
-                totalSpent={totalSpent}
-                totalNuts={totalNuts}
-                avgCostPerNut={avgCostPerNut}
-                onAddGirl={() => setShowAddGirlModal(true)}
-                onShare={() => setShowShareModal(true)}
-                canAddGirl={canAddGirl}
+                onNavigate={setActiveView}
               />
             )}
             {activeView === 'girls' && (
@@ -366,111 +361,6 @@ function AppContent() {
   );
 }
 
-interface DashboardProps {
-  girls: GirlWithMetrics[];
-  activeGirls: GirlWithMetrics[];
-  totalSpent: number;
-  totalNuts: number;
-  avgCostPerNut: number;
-  onAddGirl: () => void;
-  onShare: () => void;
-  canAddGirl: boolean;
-}
-
-function Dashboard({ girls, activeGirls, totalSpent, totalNuts, avgCostPerNut, onAddGirl, onShare, canAddGirl }: DashboardProps) {
-  return (
-    <div className="space-y-6">
-      <div className="flex items-start justify-between">
-        <div>
-          <h2 className="text-3xl mb-2">Dashboard</h2>
-          <p className="text-cpn-gray">Track your relationship efficiency metrics</p>
-        </div>
-        {girls.length > 0 && (
-          <button
-            onClick={onShare}
-            className="btn-secondary flex items-center gap-2"
-          >
-            <Share2 size={20} />
-            <span className="hidden sm:inline">Share</span>
-          </button>
-        )}
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="stat-card">
-          <div className="stat-card-label">Active Girls</div>
-          <div className="stat-card-value">{activeGirls.length}</div>
-        </div>
-        <div className="stat-card">
-          <div className="stat-card-label">Total Spent</div>
-          <div className="stat-card-value">{formatCurrency(totalSpent)}</div>
-        </div>
-        <div className="stat-card">
-          <div className="stat-card-label">Total Nuts</div>
-          <div className="stat-card-value">{totalNuts}</div>
-        </div>
-        <div className="stat-card">
-          <div className="stat-card-label">Avg Cost/Nut</div>
-          <div className="stat-card-value">{formatCurrency(avgCostPerNut)}</div>
-        </div>
-      </div>
-
-      {girls.length === 0 ? (
-        <div className="card-cpn">
-          <h3 className="text-xl mb-4">Getting Started</h3>
-          <div className="space-y-4 text-cpn-gray">
-            <div className="flex items-start gap-3">
-              <div className="flex items-center justify-center w-8 h-8 rounded-full bg-cpn-yellow text-cpn-dark font-bold flex-shrink-0">1</div>
-              <div>
-                <h4 className="text-white font-bold mb-1">Add Your First Girl</h4>
-                <p className="text-sm">Create a profile with name, age, and hotness rating (5.0-10.0 scale)</p>
-              </div>
-            </div>
-            <div className="flex items-start gap-3">
-              <div className="flex items-center justify-center w-8 h-8 rounded-full bg-cpn-yellow text-cpn-dark font-bold flex-shrink-0">2</div>
-              <div>
-                <h4 className="text-white font-bold mb-1">Track Your Data</h4>
-                <p className="text-sm">Log date, amount spent, duration, and number of nuts for each encounter</p>
-              </div>
-            </div>
-            <div className="flex items-start gap-3">
-              <div className="flex items-center justify-center w-8 h-8 rounded-full bg-cpn-yellow text-cpn-dark font-bold flex-shrink-0">3</div>
-              <div>
-                <h4 className="text-white font-bold mb-1">Analyze Your Metrics</h4>
-                <p className="text-sm">View cost per nut, time efficiency, and comparative analytics</p>
-              </div>
-            </div>
-          </div>
-          <button className="btn-cpn mt-6" onClick={onAddGirl} disabled={!canAddGirl}>
-            Add Your First Girl
-          </button>
-        </div>
-      ) : (
-        <div className="card-cpn">
-          <h3 className="text-xl mb-4">Performance Insights</h3>
-          <div className="space-y-3">
-            {activeGirls.length > 0 && (
-              <>
-                <div className="flex items-center justify-between p-3 bg-cpn-dark rounded-lg">
-                  <span className="text-cpn-gray">Best Value</span>
-                  <span className="text-cpn-yellow font-bold">
-                    {activeGirls.sort((a, b) => a.costPerNut - b.costPerNut)[0]?.name} - {formatCurrency(activeGirls[0]?.costPerNut || 0)}/nut
-                  </span>
-                </div>
-                <div className="flex items-center justify-between p-3 bg-cpn-dark rounded-lg">
-                  <span className="text-cpn-gray">Highest Investment</span>
-                  <span className="text-cpn-yellow font-bold">
-                    {activeGirls.sort((a, b) => b.totalSpent - a.totalSpent)[0]?.name} - {formatCurrency(activeGirls[0]?.totalSpent || 0)}
-                  </span>
-                </div>
-              </>
-            )}
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
 
 interface GirlsViewProps {
   girls: GirlWithMetrics[];
