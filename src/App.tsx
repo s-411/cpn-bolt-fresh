@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Users, TrendingUp, Settings, BarChart3, Plus, CreditCard as Edit, Trash2, LogOut, Table, Share2, Globe, Trophy } from 'lucide-react';
 import { AuthProvider, useAuth } from './lib/context/AuthContext';
 import { SignIn } from './pages/SignIn';
@@ -14,16 +13,11 @@ import { Share } from './pages/Share';
 import { ShareCenter } from './pages/ShareCenter';
 import { DataVault } from './pages/DataVault';
 import { Leaderboards } from './pages/Leaderboards';
-import { LoginPage } from './pages/LoginPage';
-import { SignupPage } from './pages/SignupPage';
-import { PricingPage } from './pages/PricingPage';
-import { SuccessPage } from './pages/SuccessPage';
 import { AddGirlModal } from './components/AddGirlModal';
 import { AddDataModal } from './components/AddDataModal';
 import { EditGirlModal } from './components/EditGirlModal';
 import { EditDataModal } from './components/EditDataModal';
 import { ShareModal } from './components/ShareModal';
-import { SubscriptionStatus } from './components/SubscriptionStatus';
 import { supabase } from './lib/supabase/client';
 import { Database } from './lib/types/database';
 import { calculateCostPerNut, calculateTimePerNut, calculateCostPerHour, formatCurrency, formatRating } from './lib/calculations';
@@ -40,69 +34,6 @@ interface GirlWithMetrics extends Girl {
   timePerNut: number;
   costPerHour: number;
   entryCount: number;
-}
-
-function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const { user, loading } = useAuth();
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-indigo-600"></div>
-      </div>
-    );
-  }
-
-  if (!user) {
-    return <Navigate to="/login" replace />;
-  }
-
-  return <>{children}</>;
-}
-
-function DashboardComponent() {
-  const { signOut } = useAuth();
-
-  return (
-    <div className="min-h-screen bg-gray-50">
-      <nav className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
-            <div className="flex items-center">
-              <h1 className="text-xl font-semibold text-gray-900">CPN Dashboard</h1>
-            </div>
-            <div className="flex items-center space-x-4">
-              <SubscriptionStatus />
-              <button
-                onClick={signOut}
-                className="flex items-center space-x-2 text-gray-500 hover:text-gray-700"
-              >
-                <LogOut className="h-4 w-4" />
-                <span>Sign Out</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      </nav>
-      
-      <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        <div className="px-4 py-6 sm:px-0">
-          <div className="border-4 border-dashed border-gray-200 rounded-lg h-96 flex items-center justify-center">
-            <div className="text-center">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Welcome to CPN</h2>
-              <p className="text-gray-600 mb-6">Your dashboard is ready to go!</p>
-              <a
-                href="/pricing"
-                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
-              >
-                View Pricing
-              </a>
-            </div>
-          </div>
-        </div>
-      </main>
-    </div>
-  );
 }
 
 function AppContent() {
@@ -633,31 +564,10 @@ function SettingsView({ profile, girls, onSignOut }: { profile: any; girls: any[
   );
 }
 
-function App() {
-  return (
-    <Router>
-      <Routes>
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/signup" element={<SignupPage />} />
-        <Route path="/pricing" element={<PricingPage />} />
-        <Route path="/success" element={<SuccessPage />} />
-        <Route
-          path="/"
-          element={
-            <ProtectedRoute>
-              <DashboardComponent />
-            </ProtectedRoute>
-          }
-        />
-      </Routes>
-    </Router>
-  );
-}
-
-export default function AppWrapper() {
+export default function App() {
   return (
     <AuthProvider>
-      <App />
+      <AppContent />
     </AuthProvider>
   );
 }
