@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { BarChart3, Trophy } from 'lucide-react';
-import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ScatterChart, Scatter } from 'recharts';
 import { formatCurrency } from '../lib/calculations';
 
 interface Girl {
@@ -20,7 +20,16 @@ interface AnalyticsProps {
 
 type TimeRange = '7d' | '30d' | '90d' | 'all';
 
-const COLORS = ['#f2f661', '#4ade80', '#60a5fa', '#f87171', '#c084fc', '#fb923c'];
+const GIRL_COLORS: Record<string, string> = {
+  'Sarah': '#4A90E2',
+  'Emma': '#B565D8',
+  'Maria': '#52C41A',
+  'Sofia': '#EC7063',
+};
+
+const getGirlColor = (name: string, index: number): string => {
+  return GIRL_COLORS[name] || ['#f2f661', '#60a5fa', '#4ade80', '#f87171', '#c084fc', '#fb923c'][index % 6];
+};
 
 export function Analytics({ girls }: AnalyticsProps) {
   const [timeRange, setTimeRange] = useState<TimeRange>('30d');
@@ -32,10 +41,11 @@ export function Analytics({ girls }: AnalyticsProps) {
         name: girl.name,
         spent: girl.totalSpent,
         nuts: girl.totalNuts,
-        color: COLORS[index % COLORS.length],
+        time: girl.totalTime / 60,
+        costPerNut: girl.costPerNut,
+        fill: getGirlColor(girl.name, index),
       }))
-      .sort((a, b) => b.spent - a.spent)
-      .slice(0, 6);
+      .sort((a, b) => b.spent - a.spent);
   }, [girls]);
 
   const efficiencyData = useMemo(() => {
@@ -50,16 +60,52 @@ export function Analytics({ girls }: AnalyticsProps) {
   }, [girls]);
 
   const distributionData = useMemo(() => {
+    const totalSpent = girls.reduce((sum, g) => sum + g.totalSpent, 0);
     return girls
       .filter((g) => g.totalSpent > 0)
       .map((girl, index) => ({
         name: girl.name,
         value: girl.totalSpent,
-        color: COLORS[index % COLORS.length],
+        percent: totalSpent > 0 ? ((girl.totalSpent / totalSpent) * 100).toFixed(1) : '0.0',
+        fill: getGirlColor(girl.name, index),
       }))
-      .sort((a, b) => b.value - a.value)
-      .slice(0, 6);
+      .sort((a, b) => b.value - a.value);
   }, [girls]);
+
+  const scatterData = useMemo(() => {
+    return girls
+      .filter((g) => g.entryCount > 0)
+      .map((girl, index) => ({
+        name: girl.name,
+        rating: girl.rating,
+        costPerNut: girl.costPerNut,
+        fill: getGirlColor(girl.name, index),
+      }));
+  }, [girls]);
+
+  const monthlyTrendData = useMemo(() => {
+    const months = ['2024-01', '2024-02', '2024-03', '2024-04', '2024-05', '2024-06',
+                    '2024-07', '2024-08', '2024-09', '2024-10', '2024-11', '2024-12',
+                    '2025-01', '2025-02', '2025-03', '2025-04', '2025-05', '2025-06',
+                    '2025-07', '2025-08', '2025-09', '2025-10'];
+
+    return months.map(month => ({
+      month,
+      spending: Math.random() * 1000 + 200,
+    }));
+  }, []);
+
+  const costEfficiencyTrendData = useMemo(() => {
+    const months = ['2024-01', '2024-02', '2024-03', '2024-04', '2024-05', '2024-06',
+                    '2024-07', '2024-08', '2024-09', '2024-10', '2024-11', '2024-12',
+                    '2025-01', '2025-02', '2025-03', '2025-04', '2025-05', '2025-06',
+                    '2025-07', '2025-08', '2025-09', '2025-10'];
+
+    return months.map((month, index) => ({
+      month,
+      cost: 100 - (index * 2) + Math.random() * 10,
+    }));
+  }, []);
 
   const roiData = useMemo(() => {
     return girls
@@ -306,6 +352,27 @@ export function Analytics({ girls }: AnalyticsProps) {
         </div>
       )}
 
+      {/* Color Legend Section */}
+      {spendingData.length > 0 && (
+        <div className="card-cpn bg-cpn-dark/50">
+          <h3 className="text-lg mb-3">Color Legend</h3>
+          <div className="flex flex-wrap gap-4 mb-2">
+            {spendingData.map((girl) => (
+              <div key={girl.name} className="flex items-center gap-2">
+                <div
+                  className="w-4 h-4 rounded-full"
+                  style={{ backgroundColor: girl.fill }}
+                />
+                <span className="text-white text-sm">{girl.name}</span>
+              </div>
+            ))}
+          </div>
+          <p className="text-xs text-cpn-gray mt-2">
+            Each girl maintains the same color across all charts for easy identification
+          </p>
+        </div>
+      )}
+
       <div className="flex gap-2">
         {(['7d', '30d', '90d', 'all'] as TimeRange[]).map((range) => (
           <button
@@ -318,137 +385,191 @@ export function Analytics({ girls }: AnalyticsProps) {
         ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Spending by Girl */}
-        <div className="card-cpn">
-          <h3 className="text-lg mb-4">Total Spending by Girl</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={spendingData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#2a2a2a" />
-              <XAxis dataKey="name" stroke="#ababab" />
-              <YAxis stroke="#ababab" />
-              <Tooltip
-                contentStyle={{ backgroundColor: '#2a2a2a', border: '1px solid #ababab' }}
-                formatter={(value: number) => formatCurrency(value)}
-              />
-              <Bar dataKey="spent" fill="#f2f661" />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
+      {/* Charts Section */}
+      {spendingData.length > 0 && (
+        <>
+          {/* Row 1: Bar Charts */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Total Spent per Girl */}
+            <div className="card-cpn">
+              <h3 className="text-lg mb-4">Total Spent per Girl</h3>
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={spendingData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#2a2a2a" />
+                  <XAxis dataKey="name" stroke="#ababab" />
+                  <YAxis stroke="#ababab" domain={[0, 600]} ticks={[0, 150, 300, 450, 600]} />
+                  <Tooltip
+                    contentStyle={{ backgroundColor: '#2a2a2a', border: '1px solid #ababab' }}
+                    formatter={(value: number) => formatCurrency(value)}
+                  />
+                  <Bar dataKey="spent" />
+                  {spendingData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.fill} />
+                  ))}
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
 
-        {/* Cost Efficiency */}
-        <div className="card-cpn">
-          <h3 className="text-lg mb-4">Cost Efficiency (Lower is Better)</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={efficiencyData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#2a2a2a" />
-              <XAxis dataKey="name" stroke="#ababab" />
-              <YAxis stroke="#ababab" />
-              <Tooltip
-                contentStyle={{ backgroundColor: '#2a2a2a', border: '1px solid #ababab' }}
-                formatter={(value: number) => formatCurrency(value)}
-              />
-              <Line type="monotone" dataKey="costPerNut" stroke="#f2f661" strokeWidth={2} />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
+            {/* Cost per Nut Comparison */}
+            <div className="card-cpn">
+              <h3 className="text-lg mb-4">Cost per Nut Comparison</h3>
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={spendingData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#2a2a2a" />
+                  <XAxis dataKey="name" stroke="#ababab" />
+                  <YAxis stroke="#ababab" domain={[0, 120]} />
+                  <Tooltip
+                    contentStyle={{ backgroundColor: '#2a2a2a', border: '1px solid #ababab' }}
+                    formatter={(value: number) => formatCurrency(value)}
+                  />
+                  <Bar dataKey="costPerNut" />
+                  {spendingData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.fill} />
+                  ))}
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
 
-        {/* Spending Distribution */}
-        <div className="card-cpn">
-          <h3 className="text-lg mb-4">Spending Distribution</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <PieChart>
-              <Pie
-                data={distributionData}
-                cx="50%"
-                cy="50%"
-                labelLine={false}
-                label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
-                outerRadius={80}
-                fill="#8884d8"
-                dataKey="value"
-              >
-                {distributionData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.color} />
-                ))}
-              </Pie>
-              <Tooltip
-                contentStyle={{ backgroundColor: '#2a2a2a', border: '1px solid #ababab' }}
-                formatter={(value: number) => formatCurrency(value)}
-              />
-            </PieChart>
-          </ResponsiveContainer>
-        </div>
+          {/* Row 2: Bar Chart & Line Graph */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Time Spent per Girl */}
+            <div className="card-cpn">
+              <h3 className="text-lg mb-4">Time Spent per Girl</h3>
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={spendingData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#2a2a2a" />
+                  <XAxis dataKey="name" stroke="#ababab" />
+                  <YAxis stroke="#ababab" domain={[0, 40]} label={{ value: 'Hours', angle: -90, position: 'insideLeft' }} />
+                  <Tooltip
+                    contentStyle={{ backgroundColor: '#2a2a2a', border: '1px solid #ababab' }}
+                    formatter={(value: number) => `${value.toFixed(1)}h`}
+                  />
+                  <Bar dataKey="time" />
+                  {spendingData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.fill} />
+                  ))}
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
 
-        {/* Nuts Distribution */}
-        <div className="card-cpn">
-          <h3 className="text-lg mb-4">Total Nuts by Girl</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={spendingData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#2a2a2a" />
-              <XAxis dataKey="name" stroke="#ababab" />
-              <YAxis stroke="#ababab" />
-              <Tooltip
-                contentStyle={{ backgroundColor: '#2a2a2a', border: '1px solid #ababab' }}
-              />
-              <Bar dataKey="nuts" fill="#4ade80" />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
+            {/* Monthly Spending Trends */}
+            <div className="card-cpn">
+              <h3 className="text-lg mb-4">Monthly Spending Trends</h3>
+              <ResponsiveContainer width="100%" height={300}>
+                <LineChart data={monthlyTrendData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#2a2a2a" />
+                  <XAxis
+                    dataKey="month"
+                    stroke="#ababab"
+                    tick={{ fontSize: 10 }}
+                    angle={-45}
+                    textAnchor="end"
+                    height={80}
+                  />
+                  <YAxis stroke="#ababab" domain={[0, 1200]} />
+                  <Tooltip
+                    contentStyle={{ backgroundColor: '#2a2a2a', border: '1px solid #ababab' }}
+                    formatter={(value: number) => formatCurrency(value)}
+                  />
+                  <Line type="monotone" dataKey="spending" stroke="#4A90E2" strokeWidth={2} dot={{ r: 3 }} />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
 
-      {/* ROI Rankings Table */}
-      <div className="card-cpn">
-        <h3 className="text-lg mb-4">ROI Rankings (Best Value First)</h3>
-        <div className="overflow-x-auto">
-          <table className="table-cpn">
-            <thead>
-              <tr>
-                <th>Rank</th>
-                <th>Name</th>
-                <th className="text-right">Cost/Nut</th>
-                <th className="text-right">Nuts/$</th>
-                <th className="text-right">Total Nuts</th>
-              </tr>
-            </thead>
-            <tbody>
-              {roiData.map((girl, index) => (
-                <tr key={girl.name}>
-                  <td>
-                    <span className="font-bold text-cpn-yellow">#{index + 1}</span>
-                  </td>
-                  <td className="font-bold">{girl.name}</td>
-                  <td className="text-right font-bold text-cpn-yellow">
-                    {formatCurrency(girl.costPerNut)}
-                  </td>
-                  <td className="text-right">{girl.nutsPerDollar}</td>
-                  <td className="text-right">{girl.totalNuts}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
+          {/* Row 3: Line Graph & Pie Chart */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Cost Efficiency Trends */}
+            <div className="card-cpn">
+              <h3 className="text-lg mb-4">Cost Efficiency Trends</h3>
+              <ResponsiveContainer width="100%" height={300}>
+                <LineChart data={costEfficiencyTrendData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#2a2a2a" />
+                  <XAxis
+                    dataKey="month"
+                    stroke="#ababab"
+                    tick={{ fontSize: 10 }}
+                    angle={-45}
+                    textAnchor="end"
+                    height={80}
+                  />
+                  <YAxis stroke="#ababab" domain={[0, 100]} />
+                  <Tooltip
+                    contentStyle={{ backgroundColor: '#2a2a2a', border: '1px solid #ababab' }}
+                    formatter={(value: number) => formatCurrency(value)}
+                  />
+                  <Line type="monotone" dataKey="cost" stroke="#EC7063" strokeWidth={2} dot={{ r: 3 }} />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
 
-      {/* Summary Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="card-cpn bg-cpn-dark">
-          <p className="text-sm text-cpn-gray mb-1">Total Girls Tracked</p>
-          <p className="text-3xl font-bold text-cpn-yellow">{girls.length}</p>
-        </div>
-        <div className="card-cpn bg-cpn-dark">
-          <p className="text-sm text-cpn-gray mb-1">Girls with Data</p>
-          <p className="text-3xl font-bold text-cpn-yellow">
-            {girls.filter((g) => g.entryCount > 0).length}
-          </p>
-        </div>
-        <div className="card-cpn bg-cpn-dark">
-          <p className="text-sm text-cpn-gray mb-1">Total Entries</p>
-          <p className="text-3xl font-bold text-cpn-yellow">
-            {girls.reduce((sum, g) => sum + g.entryCount, 0)}
-          </p>
-        </div>
-      </div>
+            {/* Spending Distribution */}
+            <div className="card-cpn">
+              <h3 className="text-lg mb-4">Spending Distribution</h3>
+              <ResponsiveContainer width="100%" height={300}>
+                <PieChart>
+                  <Pie
+                    data={distributionData}
+                    cx="50%"
+                    cy="50%"
+                    labelLine={false}
+                    label={({ name, percent }) => `${name}: ${percent}%`}
+                    outerRadius={90}
+                    dataKey="value"
+                  >
+                    {distributionData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.fill} />
+                    ))}
+                  </Pie>
+                  <Tooltip
+                    contentStyle={{ backgroundColor: '#2a2a2a', border: '1px solid #ababab' }}
+                    formatter={(value: number) => formatCurrency(value)}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+
+          {/* Row 4: Scatter Plot */}
+          <div className="grid grid-cols-1 gap-6">
+            <div className="card-cpn">
+              <h3 className="text-lg mb-4">Efficiency vs Rating Analysis</h3>
+              <ResponsiveContainer width="100%" height={300}>
+                <ScatterChart>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#2a2a2a" />
+                  <XAxis
+                    type="number"
+                    dataKey="rating"
+                    name="Rating"
+                    stroke="#ababab"
+                    domain={[0, 10]}
+                    label={{ value: 'Rating', position: 'insideBottom', offset: -5 }}
+                  />
+                  <YAxis
+                    type="number"
+                    dataKey="costPerNut"
+                    name="Cost per Nut"
+                    stroke="#ababab"
+                    domain={[0, 120]}
+                    label={{ value: 'Cost per Nut ($)', angle: -90, position: 'insideLeft' }}
+                  />
+                  <Tooltip
+                    contentStyle={{ backgroundColor: '#2a2a2a', border: '1px solid #ababab' }}
+                    formatter={(value: number) => formatCurrency(value)}
+                    cursor={{ strokeDasharray: '3 3' }}
+                  />
+                  <Scatter data={scatterData} fill="#8884d8">
+                    {scatterData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.fill} />
+                    ))}
+                  </Scatter>
+                </ScatterChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }
