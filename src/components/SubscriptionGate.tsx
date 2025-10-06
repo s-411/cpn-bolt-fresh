@@ -22,8 +22,8 @@ export default function SubscriptionGate({ children, isLocked, featureName }: Su
           {children}
         </div>
 
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="text-center max-w-md mx-auto p-8 bg-zinc-900/95 rounded-[8px] border border-zinc-800 backdrop-blur-sm">
+        <div className="fixed top-24 left-0 right-0 flex justify-center z-50 px-4">
+          <div className="text-center max-w-md w-full p-8 bg-zinc-900/95 rounded-[8px] border border-zinc-800 backdrop-blur-sm shadow-2xl">
             <div className="inline-flex items-center justify-center w-16 h-16 bg-[var(--color-cpn-yellow)]/10 rounded-full mb-4">
               <Lock className="w-8 h-8 text-[var(--color-cpn-yellow)]" />
             </div>
