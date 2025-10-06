@@ -111,11 +111,64 @@ export function Analytics({ girls }: AnalyticsProps) {
     );
   }
 
+  const totalSpent = useMemo(() => girls.reduce((sum, g) => sum + g.totalSpent, 0), [girls]);
+  const totalNuts = useMemo(() => girls.reduce((sum, g) => sum + g.totalNuts, 0), [girls]);
+  const totalTime = useMemo(() => girls.reduce((sum, g) => sum + g.totalTime, 0), [girls]);
+  const activeProfiles = useMemo(() => girls.filter((g) => g.entryCount > 0).length, [girls]);
+  const avgCostPerNut = useMemo(() => (totalNuts > 0 ? totalSpent / totalNuts : 0), [totalSpent, totalNuts]);
+  const avgTimePerNut = useMemo(() => (totalNuts > 0 ? totalTime / totalNuts : 0), [totalTime, totalNuts]);
+
+  const formatTime = (minutes: number) => {
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+    return `${hours}h ${mins}m`;
+  };
+
   return (
     <div className="space-y-6">
       <div>
         <h2 className="text-3xl mb-2">Analytics</h2>
-        <p className="text-cpn-gray">Visualize your relationship efficiency data</p>
+        <p className="text-cpn-gray">Insights and trends across all your data</p>
+      </div>
+
+      {/* Top Metrics Grid - 3x2 Layout */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {/* Row 1 - Card 1: Total Spent */}
+        <div className="card-cpn bg-cpn-dark border border-cpn-gray/20">
+          <p className="text-sm text-cpn-gray mb-2">Total Spent</p>
+          <p className="text-3xl font-bold text-white">{formatCurrency(totalSpent)}</p>
+        </div>
+
+        {/* Row 1 - Card 2: Total Nuts */}
+        <div className="card-cpn bg-cpn-dark border border-cpn-gray/20">
+          <p className="text-sm text-cpn-gray mb-2">Total Nuts</p>
+          <p className="text-3xl font-bold text-white">{totalNuts}</p>
+          <p className="text-xs text-cpn-gray/60 mt-1">of {girls.length} total</p>
+        </div>
+
+        {/* Row 1 - Card 3: Active Profiles */}
+        <div className="card-cpn bg-cpn-dark border border-cpn-gray/20">
+          <p className="text-sm text-cpn-gray mb-2">Active Profiles</p>
+          <p className="text-3xl font-bold text-white">{activeProfiles}</p>
+        </div>
+
+        {/* Row 2 - Card 4: Average Cost Per Nut */}
+        <div className="card-cpn bg-cpn-dark border border-cpn-gray/20">
+          <p className="text-sm text-cpn-gray mb-2">Average Cost Per Nut</p>
+          <p className="text-3xl font-bold text-white">{formatCurrency(avgCostPerNut)}</p>
+        </div>
+
+        {/* Row 2 - Card 5: Total Time */}
+        <div className="card-cpn bg-cpn-dark border border-cpn-gray/20">
+          <p className="text-sm text-cpn-gray mb-2">Total Time</p>
+          <p className="text-3xl font-bold text-white">{formatTime(totalTime)}</p>
+        </div>
+
+        {/* Row 2 - Card 6: Average Time Per Nut */}
+        <div className="card-cpn bg-cpn-dark border border-cpn-gray/20">
+          <p className="text-sm text-cpn-gray mb-2">Average Time Per Nut</p>
+          <p className="text-3xl font-bold text-white">{Math.round(avgTimePerNut)} mins</p>
+        </div>
       </div>
 
       <div className="flex gap-2">
