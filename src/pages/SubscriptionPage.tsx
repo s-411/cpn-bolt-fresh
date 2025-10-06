@@ -53,7 +53,7 @@ export const SubscriptionPage: React.FC = () => {
 
       const { url } = await response.json();
       if (url) {
-        window.location.href = url;
+        window.location.replace(url);
       }
     } catch (error) {
       console.error('Error creating checkout session:', error);
