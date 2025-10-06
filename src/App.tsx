@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Users, TrendingUp, Settings, BarChart3, Plus, CreditCard as Edit, Trash2, LogOut, Table, Share2, Globe, Trophy } from 'lucide-react';
+import { isSubscriptionSuccessPage } from './lib/urlUtils';
 import UpgradeModal from './components/UpgradeModal';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { SignIn } from './pages/SignIn';
@@ -160,8 +161,7 @@ function AppContent() {
   }
 
   if (!user) {
-    const isSubscriptionSuccess = window.location.pathname === '/subscription-success';
-    if (isSubscriptionSuccess) {
+    if (isSubscriptionSuccessPage()) {
       return <SubscriptionSuccess />;
     }
 
@@ -176,8 +176,7 @@ function AppContent() {
     return <SignIn onSwitchToSignUp={() => setAuthView('signup')} />;
   }
 
-  const isSubscriptionSuccess = window.location.pathname === '/subscription-success';
-  if (isSubscriptionSuccess) {
+  if (isSubscriptionSuccessPage()) {
     return <SubscriptionSuccess />;
   }
 

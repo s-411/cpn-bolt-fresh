@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Check, Loader2, X } from 'lucide-react';
 import { supabase } from '../lib/supabase/client';
+import { clearPageParam } from '../lib/urlUtils';
 
 export default function SubscriptionSuccess() {
   const [isVerifying, setIsVerifying] = useState(true);
@@ -39,7 +40,8 @@ export default function SubscriptionSuccess() {
         setIsVerifying(false);
 
         setTimeout(() => {
-          window.location.href = '/girls';
+          clearPageParam();
+          window.location.reload();
         }, 3000);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to verify subscription');
@@ -74,12 +76,15 @@ export default function SubscriptionSuccess() {
               Activation Failed
             </h1>
             <p className="text-zinc-400 mb-6">{error}</p>
-            <a
-              href="/girls"
+            <button
+              onClick={() => {
+                clearPageParam();
+                window.location.reload();
+              }}
               className="inline-block bg-[var(--color-cpn-yellow)] hover:opacity-90 text-black font-bold py-3 px-8 rounded-[100px] transition-all"
             >
               Go to Dashboard
-            </a>
+            </button>
           </div>
         ) : (
           <div className="bg-zinc-900 rounded-[8px] border border-green-500/20 p-12 text-center">

@@ -77,8 +77,8 @@ Deno.serve(async (req: Request) => {
         },
       ],
       mode: "subscription",
-      success_url: `${req.headers.get("origin")}/subscription-success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${req.headers.get("origin")}/girls`,
+      success_url: `${req.headers.get("origin")}?page=subscription-success&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${req.headers.get("origin")}`,
       metadata: {
         supabase_user_id: user.id,
         plan_type: planType,
