@@ -93,8 +93,8 @@ export function AddDataPage({ girlId, onBack }: AddDataPageProps) {
   const amount = parseFloat(amountSpent || '0');
   const nuts = parseInt(numberOfNuts || '0');
 
-  const previewCostPerNut = nuts > 0 ? calculateCostPerNut(amount, nuts) : 0;
-  const previewTimePerNut = nuts > 0 ? calculateTimePerNut(totalMinutes, nuts) : 0;
+  const previewCostPerNut = nuts >= 0 ? calculateCostPerNut(amount, nuts) : 0;
+  const previewTimePerNut = nuts >= 0 ? calculateTimePerNut(totalMinutes, nuts) : 0;
   const previewCostPerHour = totalMinutes > 0 ? calculateCostPerHour(amount, totalMinutes) : 0;
 
   const handleSubmit = async (e: FormEvent) => {
@@ -107,8 +107,8 @@ export function AddDataPage({ girlId, onBack }: AddDataPageProps) {
       return;
     }
 
-    if (nuts <= 0) {
-      setError('Number of nuts must be greater than 0');
+    if (nuts < 0) {
+      setError('Number of nuts cannot be negative');
       return;
     }
 
@@ -370,7 +370,7 @@ export function AddDataPage({ girlId, onBack }: AddDataPageProps) {
                 value={numberOfNuts}
                 onChange={(e) => setNumberOfNuts(e.target.value)}
                 required
-                min="1"
+                min="0"
                 disabled={submitting}
               />
             </div>
@@ -436,7 +436,7 @@ export function AddDataPage({ girlId, onBack }: AddDataPageProps) {
             </div>
           </div>
 
-          {amount > 0 && nuts > 0 && totalMinutes > 0 && (
+          {amount >= 0 && nuts >= 0 && totalMinutes > 0 && (
             <div className="mt-6 p-4 bg-cpn-yellow/10 border border-cpn-yellow/30 rounded-lg">
               <h4 className="text-sm text-cpn-yellow mb-3 font-bold">This Entry Preview</h4>
               <div className="grid grid-cols-3 gap-2 text-center">

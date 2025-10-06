@@ -35,8 +35,8 @@ export function EditDataModal({ isOpen, onClose, onSuccess, entry, girlName }: E
   const amount = parseFloat(amountSpent || '0');
   const nuts = parseInt(numberOfNuts || '0');
 
-  const previewCostPerNut = nuts > 0 ? calculateCostPerNut(amount, nuts) : 0;
-  const previewTimePerNut = nuts > 0 ? calculateTimePerNut(totalMinutes, nuts) : 0;
+  const previewCostPerNut = nuts >= 0 ? calculateCostPerNut(amount, nuts) : 0;
+  const previewTimePerNut = nuts >= 0 ? calculateTimePerNut(totalMinutes, nuts) : 0;
   const previewCostPerHour = totalMinutes > 0 ? calculateCostPerHour(amount, totalMinutes) : 0;
 
   const handleSubmit = async (e: FormEvent) => {
@@ -48,8 +48,8 @@ export function EditDataModal({ isOpen, onClose, onSuccess, entry, girlName }: E
       return;
     }
 
-    if (nuts <= 0) {
-      setError('Number of nuts must be greater than 0');
+    if (nuts < 0) {
+      setError('Number of nuts cannot be negative');
       return;
     }
 
@@ -170,12 +170,12 @@ export function EditDataModal({ isOpen, onClose, onSuccess, entry, girlName }: E
             value={numberOfNuts}
             onChange={(e) => setNumberOfNuts(e.target.value)}
             required
-            min="1"
+            min="0"
             disabled={loading}
           />
         </div>
 
-        {amount > 0 && nuts > 0 && totalMinutes > 0 && (
+        {amount >= 0 && nuts >= 0 && totalMinutes > 0 && (
           <div className="card-cpn bg-cpn-dark">
             <h4 className="text-sm text-cpn-gray mb-3">Calculated Metrics Preview</h4>
             <div className="grid grid-cols-3 gap-4 text-center">

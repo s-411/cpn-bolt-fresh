@@ -94,7 +94,7 @@ export function DataEntry({ userId, onSuccess }: DataEntryProps) {
       newErrors.hours = 'This field is required';
     }
 
-    if (!numberOfNuts || parseInt(numberOfNuts) <= 0) {
+    if (!numberOfNuts || parseInt(numberOfNuts) < 0) {
       newErrors.numberOfNuts = 'This field is required';
     }
 
@@ -309,7 +309,7 @@ export function DataEntry({ userId, onSuccess }: DataEntryProps) {
                     placeholder="0"
                     value={numberOfNuts}
                     onChange={(e) => setNumberOfNuts(e.target.value)}
-                    min="1"
+                    min="0"
                     disabled={submitting}
                   />
                   {errors.numberOfNuts && (
