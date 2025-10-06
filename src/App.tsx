@@ -5,6 +5,8 @@ import UpgradeModal from './components/UpgradeModal';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { SignIn } from './pages/SignIn';
 import { SignUp } from './pages/SignUp';
+import { ResetPassword } from './pages/ResetPassword';
+import { PasswordUpdate } from './pages/PasswordUpdate';
 import { Dashboard } from './pages/Dashboard';
 import { Overview } from './pages/Overview';
 import { GirlDetail } from './pages/GirlDetail';
@@ -42,7 +44,7 @@ interface GirlWithMetrics extends Girl {
 
 function AppContent() {
   const { user, profile, loading: authLoading, signOut, showPaywall, setShowPaywall } = useAuth();
-  const [authView, setAuthView] = useState<'signin' | 'signup'>('signin');
+  const [authView, setAuthView] = useState<'signin' | 'signup' | 'resetpassword' | 'passwordupdate'>('signin');
   const [activeView, setActiveView] = useState<'dashboard' | 'girls' | 'overview' | 'analytics' | 'dataentry' | 'datavault' | 'leaderboards' | 'share' | 'sharecenter' | 'settings'>('dashboard');
   const [showAddGirlModal, setShowAddGirlModal] = useState(false);
   const [showEditGirlModal, setShowEditGirlModal] = useState(false);
@@ -60,7 +62,15 @@ function AppContent() {
     }
   }, [user]);
 
-  // Handle URL hash navigation for hidden pages
+  useEffect(() => {
+    const path = window.location.pathname;
+    if (path === '/password-update') {
+      setAuthView('passwordupdate');
+    } else if (path === '/reset-password') {
+      setAuthView('resetpassword');
+    }
+  }, []);
+
   useEffect(() => {
     const handleHashChange = () => {
       const hash = window.location.hash.substring(1);
@@ -168,12 +178,52 @@ function AppContent() {
     if (authView === 'signup') {
       return (
         <SignUp
-          onSwitchToSignIn={() => setAuthView('signin')}
-          onSuccess={() => setAuthView('signin')}
+          onSwitchToSignIn={() => {
+            setAuthView('signin');
+            window.history.pushState({}, '', '/');
+          }}
+          onSuccess={() => {
+            setAuthView('signin');
+            window.history.pushState({}, '', '/');
+          }}
         />
       );
     }
-    return <SignIn onSwitchToSignUp={() => setAuthView('signup')} />;
+
+    if (authView === 'resetpassword') {
+      return (
+        <ResetPassword
+          onSwitchToSignIn={() => {
+            setAuthView('signin');
+            window.history.pushState({}, '', '/');
+          }}
+        />
+      );
+    }
+
+    if (authView === 'passwordupdate') {
+      return (
+        <PasswordUpdate
+          onSwitchToSignIn={() => {
+            setAuthView('signin');
+            window.history.pushState({}, '', '/');
+          }}
+        />
+      );
+    }
+
+    return (
+      <SignIn
+        onSwitchToSignUp={() => {
+          setAuthView('signup');
+          window.history.pushState({}, '', '/signup');
+        }}
+        onSwitchToResetPassword={() => {
+          setAuthView('resetpassword');
+          window.history.pushState({}, '', '/reset-password');
+        }}
+      />
+    );
   }
 
   if (isSubscriptionSuccessPage()) {

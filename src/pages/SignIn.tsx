@@ -4,9 +4,10 @@ import { LogIn } from 'lucide-react';
 
 interface SignInProps {
   onSwitchToSignUp: () => void;
+  onSwitchToResetPassword?: () => void;
 }
 
-export function SignIn({ onSwitchToSignUp }: SignInProps) {
+export function SignIn({ onSwitchToSignUp, onSwitchToResetPassword }: SignInProps) {
   const { signIn } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -63,9 +64,20 @@ export function SignIn({ onSwitchToSignUp }: SignInProps) {
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm text-cpn-gray mb-2">
-              Password
-            </label>
+            <div className="flex items-center justify-between mb-2">
+              <label htmlFor="password" className="block text-sm text-cpn-gray">
+                Password
+              </label>
+              {onSwitchToResetPassword && (
+                <button
+                  type="button"
+                  onClick={onSwitchToResetPassword}
+                  className="text-xs text-cpn-gray hover:text-cpn-yellow transition-colors"
+                >
+                  Forgot password?
+                </button>
+              )}
+            </div>
             <input
               id="password"
               type="password"
