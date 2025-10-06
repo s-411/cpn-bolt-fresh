@@ -4,7 +4,7 @@ This guide will help you resolve the subscription errors you're experiencing and
 
 ## 🔴 The Problem
 
-When users attempt to activate "Play" mode after account creation, they encounter:
+When users attempt to activate "Player" mode after account creation, they encounter:
 - Error: "Missing priceId or planType"
 - Two 400 errors from Supabase auth
 - One 400 error from stripe-checkout function
