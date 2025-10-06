@@ -24,6 +24,10 @@ export default function UpgradeModal({ isOpen, onClose, featureName = 'this feat
         ? STRIPE_CONFIG.prices.playerModeWeekly
         : STRIPE_CONFIG.prices.playerModeAnnual;
 
+      if (!priceId || priceId.length === 0 || priceId.startsWith('price_REPLACE')) {
+        throw new Error('Stripe is not configured. Please contact support or check your environment configuration.');
+      }
+
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) throw new Error('Not authenticated');
 

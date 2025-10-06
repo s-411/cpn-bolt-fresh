@@ -17,7 +17,13 @@ Deno.serve(async (req: Request) => {
   }
 
   try {
-    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
+    const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
+    if (!stripeKey) {
+      console.error('STRIPE_SECRET_KEY environment variable is not set');
+      throw new Error("Stripe is not configured on the server");
+    }
+
+    const stripe = new Stripe(stripeKey, {
       apiVersion: "2024-10-28.acacia",
     });
 
@@ -41,8 +47,14 @@ Deno.serve(async (req: Request) => {
 
     const { priceId, planType } = await req.json();
 
-    if (!priceId || !planType) {
-      throw new Error("Missing priceId or planType");
+    if (!priceId) {
+      console.error('Missing priceId in request body');
+      throw new Error("Missing priceId - Stripe product configuration is incomplete");
+    }
+
+    if (!planType) {
+      console.error('Missing planType in request body');
+      throw new Error("Missing planType - Plan type (weekly/annual) must be specified");
     }
 
     const { data: userData } = await supabaseClient
