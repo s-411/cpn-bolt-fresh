@@ -670,14 +670,6 @@ function SettingsView({ profile, girls, onSignOut }: { profile: any; girls: any[
                 </p>
               </div>
             )}
-
-            {!subscription.isFree && profile?.subscription_period_end && (
-              <div className="p-4 bg-cpn-dark rounded-lg">
-                <p className="text-sm text-cpn-gray">
-                  Next billing date: {new Date(profile.subscription_period_end).toLocaleDateString()}
-                </p>
-              </div>
-            )}
           </div>
 
         <div className="card-cpn">
