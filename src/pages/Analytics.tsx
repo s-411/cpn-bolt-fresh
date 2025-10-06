@@ -84,27 +84,11 @@ export function Analytics({ girls }: AnalyticsProps) {
   }, [girls]);
 
   const monthlyTrendData = useMemo(() => {
-    const months = ['2024-01', '2024-02', '2024-03', '2024-04', '2024-05', '2024-06',
-                    '2024-07', '2024-08', '2024-09', '2024-10', '2024-11', '2024-12',
-                    '2025-01', '2025-02', '2025-03', '2025-04', '2025-05', '2025-06',
-                    '2025-07', '2025-08', '2025-09', '2025-10'];
-
-    return months.map(month => ({
-      month,
-      spending: Math.random() * 1000 + 200,
-    }));
+    return [];
   }, []);
 
   const costEfficiencyTrendData = useMemo(() => {
-    const months = ['2024-01', '2024-02', '2024-03', '2024-04', '2024-05', '2024-06',
-                    '2024-07', '2024-08', '2024-09', '2024-10', '2024-11', '2024-12',
-                    '2025-01', '2025-02', '2025-03', '2025-04', '2025-05', '2025-06',
-                    '2025-07', '2025-08', '2025-09', '2025-10'];
-
-    return months.map((month, index) => ({
-      month,
-      cost: 100 - (index * 2) + Math.random() * 10,
-    }));
+    return [];
   }, []);
 
   const roiData = useMemo(() => {
@@ -399,7 +383,7 @@ export function Analytics({ girls }: AnalyticsProps) {
                   <XAxis dataKey="name" stroke="#ababab" />
                   <YAxis stroke="#ababab" domain={[0, 600]} ticks={[0, 150, 300, 450, 600]} />
                   <Tooltip
-                    contentStyle={{ backgroundColor: '#2a2a2a', border: '1px solid #ababab' }}
+                    contentStyle={{ backgroundColor: '#2a2a2a', border: '1px solid #ababab', color: '#ffffff' }}
                     formatter={(value: number) => formatCurrency(value)}
                   />
                   <Bar dataKey="spent" />
@@ -419,7 +403,7 @@ export function Analytics({ girls }: AnalyticsProps) {
                   <XAxis dataKey="name" stroke="#ababab" />
                   <YAxis stroke="#ababab" domain={[0, 120]} />
                   <Tooltip
-                    contentStyle={{ backgroundColor: '#2a2a2a', border: '1px solid #ababab' }}
+                    contentStyle={{ backgroundColor: '#2a2a2a', border: '1px solid #ababab', color: '#ffffff' }}
                     formatter={(value: number) => formatCurrency(value)}
                   />
                   <Bar dataKey="costPerNut" />
@@ -431,8 +415,8 @@ export function Analytics({ girls }: AnalyticsProps) {
             </div>
           </div>
 
-          {/* Row 2: Bar Chart & Line Graph */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Row 2: Bar Chart */}
+          <div className="grid grid-cols-1 gap-6">
             {/* Time Spent per Girl */}
             <div className="card-cpn">
               <h3 className="text-lg mb-4">Time Spent per Girl</h3>
@@ -442,7 +426,7 @@ export function Analytics({ girls }: AnalyticsProps) {
                   <XAxis dataKey="name" stroke="#ababab" />
                   <YAxis stroke="#ababab" domain={[0, 40]} label={{ value: 'Hours', angle: -90, position: 'insideLeft' }} />
                   <Tooltip
-                    contentStyle={{ backgroundColor: '#2a2a2a', border: '1px solid #ababab' }}
+                    contentStyle={{ backgroundColor: '#2a2a2a', border: '1px solid #ababab', color: '#ffffff' }}
                     formatter={(value: number) => `${value.toFixed(1)}h`}
                   />
                   <Bar dataKey="time" />
@@ -452,58 +436,10 @@ export function Analytics({ girls }: AnalyticsProps) {
                 </BarChart>
               </ResponsiveContainer>
             </div>
-
-            {/* Monthly Spending Trends */}
-            <div className="card-cpn">
-              <h3 className="text-lg mb-4">Monthly Spending Trends</h3>
-              <ResponsiveContainer width="100%" height={300}>
-                <LineChart data={monthlyTrendData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#2a2a2a" />
-                  <XAxis
-                    dataKey="month"
-                    stroke="#ababab"
-                    tick={{ fontSize: 10 }}
-                    angle={-45}
-                    textAnchor="end"
-                    height={80}
-                  />
-                  <YAxis stroke="#ababab" domain={[0, 1200]} />
-                  <Tooltip
-                    contentStyle={{ backgroundColor: '#2a2a2a', border: '1px solid #ababab' }}
-                    formatter={(value: number) => formatCurrency(value)}
-                  />
-                  <Line type="monotone" dataKey="spending" stroke="#4A90E2" strokeWidth={2} dot={{ r: 3 }} />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
           </div>
 
-          {/* Row 3: Line Graph & Pie Chart */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Cost Efficiency Trends */}
-            <div className="card-cpn">
-              <h3 className="text-lg mb-4">Cost Efficiency Trends</h3>
-              <ResponsiveContainer width="100%" height={300}>
-                <LineChart data={costEfficiencyTrendData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#2a2a2a" />
-                  <XAxis
-                    dataKey="month"
-                    stroke="#ababab"
-                    tick={{ fontSize: 10 }}
-                    angle={-45}
-                    textAnchor="end"
-                    height={80}
-                  />
-                  <YAxis stroke="#ababab" domain={[0, 100]} />
-                  <Tooltip
-                    contentStyle={{ backgroundColor: '#2a2a2a', border: '1px solid #ababab' }}
-                    formatter={(value: number) => formatCurrency(value)}
-                  />
-                  <Line type="monotone" dataKey="cost" stroke="#EC7063" strokeWidth={2} dot={{ r: 3 }} />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-
+          {/* Row 3: Pie Chart */}
+          <div className="grid grid-cols-1 gap-6">
             {/* Spending Distribution */}
             <div className="card-cpn">
               <h3 className="text-lg mb-4">Spending Distribution</h3>
@@ -523,7 +459,7 @@ export function Analytics({ girls }: AnalyticsProps) {
                     ))}
                   </Pie>
                   <Tooltip
-                    contentStyle={{ backgroundColor: '#2a2a2a', border: '1px solid #ababab' }}
+                    contentStyle={{ backgroundColor: '#2a2a2a', border: '1px solid #ababab', color: '#ffffff' }}
                     formatter={(value: number) => formatCurrency(value)}
                   />
                 </PieChart>
@@ -555,7 +491,7 @@ export function Analytics({ girls }: AnalyticsProps) {
                     label={{ value: 'Cost per Nut ($)', angle: -90, position: 'insideLeft' }}
                   />
                   <Tooltip
-                    contentStyle={{ backgroundColor: '#2a2a2a', border: '1px solid #ababab' }}
+                    contentStyle={{ backgroundColor: '#2a2a2a', border: '1px solid #ababab', color: '#ffffff' }}
                     formatter={(value: number) => formatCurrency(value)}
                     cursor={{ strokeDasharray: '3 3' }}
                   />
