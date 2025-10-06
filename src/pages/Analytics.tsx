@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { BarChart3 } from 'lucide-react';
+import { BarChart3, Trophy } from 'lucide-react';
 import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { formatCurrency } from '../lib/calculations';
 
@@ -118,6 +118,24 @@ export function Analytics({ girls }: AnalyticsProps) {
   const avgCostPerNut = useMemo(() => (totalNuts > 0 ? totalSpent / totalNuts : 0), [totalSpent, totalNuts]);
   const avgTimePerNut = useMemo(() => (totalNuts > 0 ? totalTime / totalNuts : 0), [totalTime, totalNuts]);
 
+  const bestCostPerNut = useMemo(() => {
+    const girlsWithData = girls.filter((g) => g.entryCount > 0 && g.costPerNut > 0);
+    if (girlsWithData.length === 0) return null;
+    return girlsWithData.reduce((best, g) => (g.costPerNut < best.costPerNut ? g : best));
+  }, [girls]);
+
+  const highestSpender = useMemo(() => {
+    const girlsWithData = girls.filter((g) => g.entryCount > 0);
+    if (girlsWithData.length === 0) return null;
+    return girlsWithData.reduce((highest, g) => (g.totalSpent > highest.totalSpent ? g : highest));
+  }, [girls]);
+
+  const mostTimeSpent = useMemo(() => {
+    const girlsWithData = girls.filter((g) => g.entryCount > 0);
+    if (girlsWithData.length === 0) return null;
+    return girlsWithData.reduce((most, g) => (g.totalTime > most.totalTime ? g : most));
+  }, [girls]);
+
   const formatTime = (minutes: number) => {
     const hours = Math.floor(minutes / 60);
     const mins = minutes % 60;
@@ -168,6 +186,54 @@ export function Analytics({ girls }: AnalyticsProps) {
         <div className="card-cpn bg-cpn-dark border border-cpn-gray/20">
           <p className="text-sm text-cpn-gray mb-2">Average Time Per Nut</p>
           <p className="text-3xl font-bold text-white">{Math.round(avgTimePerNut)} mins</p>
+        </div>
+      </div>
+
+      {/* Performance Insights Section */}
+      <div className="card-cpn">
+        <h3 className="text-lg mb-4">Performance Insights</h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* Best Cost/Nut - Gold Trophy */}
+          <div className="card-cpn bg-cpn-dark border border-cpn-gray/20 text-center">
+            <Trophy className="w-12 h-12 mx-auto mb-3 text-yellow-400" />
+            <p className="text-sm text-cpn-gray mb-2">Best Cost/Nut</p>
+            {bestCostPerNut ? (
+              <>
+                <p className="text-xl font-bold text-cpn-yellow mb-1">{bestCostPerNut.name}</p>
+                <p className="text-lg text-white">{formatCurrency(bestCostPerNut.costPerNut)}</p>
+              </>
+            ) : (
+              <p className="text-sm text-cpn-gray">No data</p>
+            )}
+          </div>
+
+          {/* Highest Spender - Silver Trophy */}
+          <div className="card-cpn bg-cpn-dark border border-cpn-gray/20 text-center">
+            <Trophy className="w-12 h-12 mx-auto mb-3 text-gray-400" />
+            <p className="text-sm text-cpn-gray mb-2">Highest Spender</p>
+            {highestSpender ? (
+              <>
+                <p className="text-xl font-bold text-cpn-yellow mb-1">{highestSpender.name}</p>
+                <p className="text-lg text-white">{formatCurrency(highestSpender.totalSpent)}</p>
+              </>
+            ) : (
+              <p className="text-sm text-cpn-gray">No data</p>
+            )}
+          </div>
+
+          {/* Most Time Spent - Bronze Trophy */}
+          <div className="card-cpn bg-cpn-dark border border-cpn-gray/20 text-center">
+            <Trophy className="w-12 h-12 mx-auto mb-3 text-orange-600" />
+            <p className="text-sm text-cpn-gray mb-2">Most Time Spent</p>
+            {mostTimeSpent ? (
+              <>
+                <p className="text-xl font-bold text-cpn-yellow mb-1">{mostTimeSpent.name}</p>
+                <p className="text-lg text-white">{formatTime(mostTimeSpent.totalTime)}</p>
+              </>
+            ) : (
+              <p className="text-sm text-cpn-gray">No data</p>
+            )}
+          </div>
         </div>
       </div>
 
