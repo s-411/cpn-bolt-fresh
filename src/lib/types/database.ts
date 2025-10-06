@@ -15,11 +15,15 @@ export interface Database {
           email: string
           display_name: string | null
           avatar_url: string | null
-          subscription_tier: 'free' | 'premium' | 'lifetime'
+          subscription_tier: 'boyfriend' | 'player' | 'free' | 'premium' | 'lifetime'
           subscription_status: 'active' | 'canceled' | 'past_due' | 'trialing' | null
+          subscription_plan_type: 'weekly' | 'annual' | null
           stripe_customer_id: string | null
           stripe_subscription_id: string | null
+          subscription_period_start: string | null
+          subscription_period_end: string | null
           subscription_end_date: string | null
+          has_seen_paywall: boolean
           onboarding_completed_at: string | null
           created_at: string
           updated_at: string
@@ -30,11 +34,15 @@ export interface Database {
           email: string
           display_name?: string | null
           avatar_url?: string | null
-          subscription_tier?: 'free' | 'premium' | 'lifetime'
+          subscription_tier?: 'boyfriend' | 'player' | 'free' | 'premium' | 'lifetime'
           subscription_status?: 'active' | 'canceled' | 'past_due' | 'trialing' | null
+          subscription_plan_type?: 'weekly' | 'annual' | null
           stripe_customer_id?: string | null
           stripe_subscription_id?: string | null
+          subscription_period_start?: string | null
+          subscription_period_end?: string | null
           subscription_end_date?: string | null
+          has_seen_paywall?: boolean
           onboarding_completed_at?: string | null
           created_at?: string
           updated_at?: string
@@ -45,11 +53,15 @@ export interface Database {
           email?: string
           display_name?: string | null
           avatar_url?: string | null
-          subscription_tier?: 'free' | 'premium' | 'lifetime'
+          subscription_tier?: 'boyfriend' | 'player' | 'free' | 'premium' | 'lifetime'
           subscription_status?: 'active' | 'canceled' | 'past_due' | 'trialing' | null
+          subscription_plan_type?: 'weekly' | 'annual' | null
           stripe_customer_id?: string | null
           stripe_subscription_id?: string | null
+          subscription_period_start?: string | null
+          subscription_period_end?: string | null
           subscription_end_date?: string | null
+          has_seen_paywall?: boolean
           onboarding_completed_at?: string | null
           created_at?: string
           updated_at?: string
