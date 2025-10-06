@@ -97,6 +97,7 @@ Deno.serve(async (req: Request) => {
             subscription_period_end: new Date(
               subscription.current_period_end * 1000
             ).toISOString(),
+            has_seen_paywall: true,
           })
           .eq("id", userId);
 

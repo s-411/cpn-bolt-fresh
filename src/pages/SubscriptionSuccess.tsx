@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Check, Loader2, X } from 'lucide-react';
+import { Check, Loader2, X, RefreshCw } from 'lucide-react';
 import { supabase } from '../lib/supabase/client';
 import { clearPageParam } from '../lib/urlUtils';
 
@@ -7,48 +7,58 @@ export default function SubscriptionSuccess() {
   const [isVerifying, setIsVerifying] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const verifySubscription = async () => {
-      try {
-        const params = new URLSearchParams(window.location.search);
-        const sessionId = params.get('session_id');
+  const verifySubscription = async () => {
+    try {
+      setIsVerifying(true);
+      setError(null);
 
-        if (!sessionId) {
-          throw new Error('No session ID found');
-        }
+      const params = new URLSearchParams(window.location.search);
+      const sessionId = params.get('session_id');
 
-        await new Promise(resolve => setTimeout(resolve, 2000));
-
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) throw new Error('Not authenticated');
-
-        const { data: userData, error: fetchError } = await supabase
-          .from('users')
-          .select('subscription_tier, has_seen_paywall')
-          .eq('id', user.id)
-          .maybeSingle();
-
-        if (fetchError) throw fetchError;
-
-        if (!userData?.has_seen_paywall) {
-          await supabase
-            .from('users')
-            .update({ has_seen_paywall: true })
-            .eq('id', user.id);
-        }
-
-        setIsVerifying(false);
-
-        setTimeout(() => {
-          clearPageParam();
-          window.location.reload();
-        }, 3000);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to verify subscription');
-        setIsVerifying(false);
+      if (!sessionId) {
+        throw new Error('No session ID found');
       }
-    };
 
+      const { data: { session: authSession } } = await supabase.auth.getSession();
+      if (!authSession?.access_token) {
+        throw new Error('Not authenticated');
+      }
+
+      const apiUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/verify-subscription?session_id=${sessionId}`;
+
+      const response = await fetch(apiUrl, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${authSession.access_token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        const result = await response.json();
+        throw new Error(result.error || 'Failed to verify subscription');
+      }
+
+      const result = await response.json();
+
+      if (!result.success || result.status !== 'active') {
+        throw new Error(result.message || 'Subscription verification failed');
+      }
+
+      setIsVerifying(false);
+
+      setTimeout(() => {
+        clearPageParam();
+        window.location.reload();
+      }, 3000);
+    } catch (err) {
+      console.error('Verification error:', err);
+      setError(err instanceof Error ? err.message : 'Failed to verify subscription');
+      setIsVerifying(false);
+    }
+  };
+
+  useEffect(() => {
     verifySubscription();
   }, []);
 
@@ -73,18 +83,30 @@ export default function SubscriptionSuccess() {
               <X className="w-8 h-8 text-red-400" />
             </div>
             <h1 className="text-2xl font-bold text-white mb-3">
-              Activation Failed
+              Verification Issue
             </h1>
             <p className="text-zinc-400 mb-6">{error}</p>
-            <button
-              onClick={() => {
-                clearPageParam();
-                window.location.reload();
-              }}
-              className="inline-block bg-[var(--color-cpn-yellow)] hover:opacity-90 text-black font-bold py-3 px-8 rounded-[100px] transition-all"
-            >
-              Go to Dashboard
-            </button>
+            <div className="space-y-3">
+              <button
+                onClick={verifySubscription}
+                className="w-full bg-[var(--color-cpn-yellow)] hover:opacity-90 text-black font-bold py-3 px-8 rounded-[100px] transition-all flex items-center justify-center gap-2"
+              >
+                <RefreshCw className="w-4 h-4" />
+                Retry Verification
+              </button>
+              <button
+                onClick={() => {
+                  clearPageParam();
+                  window.location.reload();
+                }}
+                className="w-full bg-zinc-800 hover:bg-zinc-700 text-white font-semibold py-3 px-8 rounded-[100px] transition-all"
+              >
+                Go to Dashboard
+              </button>
+            </div>
+            <p className="text-xs text-zinc-500 mt-6">
+              Your payment was successful. If this issue persists, contact support.
+            </p>
           </div>
         ) : (
           <div className="bg-zinc-900 rounded-[8px] border border-green-500/20 p-12 text-center">
