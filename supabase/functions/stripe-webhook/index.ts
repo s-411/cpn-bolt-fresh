@@ -60,8 +60,6 @@ Deno.serve(async (req: Request) => {
           session.subscription as string
         );
 
-        const priceId = subscription.items.data[0]?.price.id;
-
         await supabaseClient
           .from("users")
           .update({
@@ -69,7 +67,6 @@ Deno.serve(async (req: Request) => {
             subscription_status: "active",
             subscription_plan_type: planType,
             stripe_subscription_id: subscription.id,
-            stripe_price_id: priceId,
             subscription_period_start: new Date(subscription.current_period_start * 1000).toISOString(),
             subscription_period_end: new Date(subscription.current_period_end * 1000).toISOString(),
           })
@@ -80,7 +77,7 @@ Deno.serve(async (req: Request) => {
 
       case "customer.subscription.updated": {
         const subscription = event.data.object as Stripe.Subscription;
-        let userId = subscription.metadata?.supabase_user_id;
+        const userId = subscription.metadata?.supabase_user_id;
 
         if (!userId) {
           const { data: customer } = await supabaseClient
@@ -93,24 +90,12 @@ Deno.serve(async (req: Request) => {
             console.error("User not found for subscription update");
             break;
           }
-          userId = customer.id;
-        }
-
-        const priceId = subscription.items.data[0]?.price.id;
-
-        let planType = null;
-        if (priceId === "price_1SBdEy4N2PMxx1mWPFLurfxX") {
-          planType = "weekly";
-        } else if (priceId === "price_1SBdEz4N2PMxx1mWQLpPCYCr") {
-          planType = "annual";
         }
 
         const updateData: any = {
           subscription_status: subscription.status,
           subscription_period_start: new Date(subscription.current_period_start * 1000).toISOString(),
           subscription_period_end: new Date(subscription.current_period_end * 1000).toISOString(),
-          stripe_price_id: priceId,
-          subscription_plan_type: planType,
         };
 
         if (subscription.status === "active") {
@@ -136,7 +121,6 @@ Deno.serve(async (req: Request) => {
             subscription_tier: "boyfriend",
             subscription_status: "canceled",
             stripe_subscription_id: null,
-            stripe_price_id: null,
             subscription_plan_type: null,
           })
           .eq("stripe_subscription_id", subscription.id);

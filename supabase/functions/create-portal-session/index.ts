@@ -57,12 +57,9 @@ Deno.serve(async (req: Request) => {
       throw new Error("No Stripe customer found. Please subscribe to a plan first.");
     }
 
-    const origin = req.headers.get("origin") || "https://your-app.com";
-    const returnUrl = `${origin}?from=billing`;
-
     const session = await stripe.billingPortal.sessions.create({
       customer: customerId,
-      return_url: returnUrl,
+      return_url: req.headers.get("origin") || "https://your-app.com",
     });
 
     return new Response(

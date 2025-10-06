@@ -41,7 +41,7 @@ interface GirlWithMetrics extends Girl {
 }
 
 function AppContent() {
-  const { user, profile, loading: authLoading, signOut, showPaywall, setShowPaywall, refreshProfile } = useAuth();
+  const { user, profile, loading: authLoading, signOut, showPaywall, setShowPaywall } = useAuth();
   const [authView, setAuthView] = useState<'signin' | 'signup'>('signin');
   const [activeView, setActiveView] = useState<'dashboard' | 'girls' | 'overview' | 'analytics' | 'dataentry' | 'datavault' | 'leaderboards' | 'share' | 'sharecenter' | 'settings'>('dashboard');
   const [showAddGirlModal, setShowAddGirlModal] = useState(false);
@@ -59,19 +59,6 @@ function AppContent() {
       loadGirls();
     }
   }, [user]);
-
-  useEffect(() => {
-    const checkBillingReturn = async () => {
-      const urlParams = new URLSearchParams(window.location.search);
-      if (urlParams.get('from') === 'billing' && user) {
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        await refreshProfile();
-        window.history.replaceState({}, document.title, window.location.pathname);
-      }
-    };
-
-    checkBillingReturn();
-  }, [user, refreshProfile]);
 
   // Handle URL hash navigation for hidden pages
   useEffect(() => {
@@ -592,19 +579,10 @@ function SettingsView({ profile, girls, onSignOut }: { profile: any; girls: any[
         isFree: true,
       };
     } else if (tier === 'player') {
-      const priceId = profile?.stripe_price_id;
       const planType = profile?.subscription_plan_type;
-
-      let description = 'Player Mode';
-      if (priceId === 'price_1SBdEy4N2PMxx1mWPFLurfxX' || planType === 'weekly') {
-        description = 'Weekly Plan - $1.99/week';
-      } else if (priceId === 'price_1SBdEz4N2PMxx1mWQLpPCYCr' || planType === 'annual') {
-        description = 'Annual Plan - $27/year';
-      }
-
       return {
         name: 'Player Mode',
-        description,
+        description: planType === 'weekly' ? 'Weekly Plan - $1.99/week' : 'Annual Plan - $27/year',
         isFree: false,
       };
     }
