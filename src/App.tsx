@@ -579,10 +579,9 @@ function SettingsView({ profile, girls, onSignOut }: { profile: any; girls: any[
         isFree: true,
       };
     } else if (tier === 'player') {
-      const planType = profile?.subscription_plan_type;
       return {
         name: 'Player Mode',
-        description: planType === 'weekly' ? 'Weekly Plan - $1.99/week' : 'Annual Plan - $27/year',
+        description: 'Unlimited profiles and premium features',
         isFree: false,
       };
     }
