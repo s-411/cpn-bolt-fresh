@@ -123,29 +123,29 @@ export function AddDataModal({ isOpen, onClose, onSuccess, girlId, girlName }: A
           </label>
           <div className="grid grid-cols-2 gap-4">
             <div>
+              <label className="block text-xs text-cpn-gray mb-2">Hours</label>
               <input
                 type="number"
                 className="input-cpn w-full"
-                placeholder="Hours"
+                placeholder="0"
                 value={hours}
                 onChange={(e) => setHours(e.target.value)}
                 min="0"
                 disabled={loading}
               />
-              <p className="text-xs text-cpn-gray mt-1">Hours</p>
             </div>
             <div>
+              <label className="block text-xs text-cpn-gray mb-2">Minutes (optional)</label>
               <input
                 type="number"
                 className="input-cpn w-full"
-                placeholder="Minutes"
+                placeholder="0"
                 value={minutes}
                 onChange={(e) => setMinutes(e.target.value)}
                 min="0"
                 max="59"
                 disabled={loading}
               />
-              <p className="text-xs text-cpn-gray mt-1">Minutes</p>
             </div>
           </div>
         </div>
@@ -158,7 +158,6 @@ export function AddDataModal({ isOpen, onClose, onSuccess, girlId, girlName }: A
             id="numberOfNuts"
             type="number"
             className="input-cpn w-full"
-            placeholder="0"
             value={numberOfNuts}
             onChange={(e) => setNumberOfNuts(e.target.value)}
             required

@@ -328,9 +328,10 @@ export function AddDataPage({ girlId, onBack }: AddDataPageProps) {
             </div>
 
             <div>
-              <label className="block text-sm text-cpn-yellow mb-2">Hours</label>
+              <label className="block text-sm text-cpn-yellow mb-2">Duration</label>
               <div className="grid grid-cols-2 gap-4">
                 <div>
+                  <label className="block text-xs text-cpn-gray mb-2">Hours</label>
                   <input
                     type="number"
                     className="input-cpn w-full"
@@ -342,7 +343,7 @@ export function AddDataPage({ girlId, onBack }: AddDataPageProps) {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm text-cpn-yellow mb-2">Minutes (optional)</label>
+                  <label className="block text-xs text-cpn-gray mb-2">Minutes (optional)</label>
                   <input
                     type="number"
                     className="input-cpn w-full"
@@ -355,7 +356,6 @@ export function AddDataPage({ girlId, onBack }: AddDataPageProps) {
                   />
                 </div>
               </div>
-              <p className="text-xs text-cpn-gray mt-2">Leave empty for 0 minutes</p>
             </div>
 
             <div>
@@ -366,7 +366,6 @@ export function AddDataPage({ girlId, onBack }: AddDataPageProps) {
                 id="numberOfNuts"
                 type="number"
                 className="input-cpn w-full"
-                placeholder="0"
                 value={numberOfNuts}
                 onChange={(e) => setNumberOfNuts(e.target.value)}
                 required

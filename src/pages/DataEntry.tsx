@@ -260,10 +260,10 @@ export function DataEntry({ userId, onSuccess }: DataEntryProps) {
                 </div>
 
                 <div>
-                  <label className="block text-sm text-cpn-yellow mb-2">Time</label>
+                  <label className="block text-sm text-cpn-yellow mb-2">Duration</label>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label htmlFor="hours" className="block text-xs text-cpn-gray mb-1">
+                      <label htmlFor="hours" className="block text-xs text-cpn-gray mb-2">
                         Hours <span className="text-red-500">*</span>
                       </label>
                       <input
@@ -279,7 +279,7 @@ export function DataEntry({ userId, onSuccess }: DataEntryProps) {
                       {errors.hours && <p className="text-red-400 text-xs mt-1">{errors.hours}</p>}
                     </div>
                     <div>
-                      <label htmlFor="minutes" className="block text-xs text-cpn-gray mb-1">
+                      <label htmlFor="minutes" className="block text-xs text-cpn-gray mb-2">
                         Minutes <span className="text-cpn-gray">(optional)</span>
                       </label>
                       <input
@@ -295,7 +295,6 @@ export function DataEntry({ userId, onSuccess }: DataEntryProps) {
                       />
                     </div>
                   </div>
-                  <p className="text-xs text-cpn-gray mt-2">Leave empty for 0 minutes</p>
                 </div>
 
                 <div>
@@ -306,7 +305,6 @@ export function DataEntry({ userId, onSuccess }: DataEntryProps) {
                     id="numberOfNuts"
                     type="number"
                     className={`input-cpn w-full ${errors.numberOfNuts ? 'border-red-500' : ''}`}
-                    placeholder="0"
                     value={numberOfNuts}
                     onChange={(e) => setNumberOfNuts(e.target.value)}
                     min="0"
