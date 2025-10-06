@@ -1,5 +1,5 @@
 import { useState, FormEvent } from 'react';
-import { useAuth } from '../lib/context/AuthContext';
+import { useAuth } from '../contexts/AuthContext';
 import { UserPlus } from 'lucide-react';
 
 interface SignUpProps {

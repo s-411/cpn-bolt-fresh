@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Share2, DollarSign, Target, Trophy, Hash, Clock, Users, Star, TrendingUp, Lock, Download, Clipboard, RefreshCw, X, Loader } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import { supabase } from '../lib/supabase/client';
-import { useAuth } from '../lib/context/AuthContext';
+import { useAuth } from '../contexts/AuthContext';
 import { Toast } from '../components/Toast';
 
 interface Metric {

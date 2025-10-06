@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { DollarSign, TrendingUp, Clock, Users, Plus, BarChart3, Table, PlayCircle, CheckCircle2, Trophy, Target } from 'lucide-react';
-import { useAuth } from '../lib/context/AuthContext';
+import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase/client';
 import { formatCurrency, formatTime, calculateCostPerNut, calculateTimePerNut, calculateCostPerHour, formatRating } from '../lib/calculations';
 
