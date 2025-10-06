@@ -65,14 +65,14 @@ export const SubscriptionSuccessPage: React.FC = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-yellow-400"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--color-cpn-yellow)]"></div>
       </div>
     );
   }
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
-      <div className="max-w-md w-full bg-white rounded-2xl shadow-lg p-8 text-center">
+      <div className="max-w-md w-full bg-white rounded-[8px] shadow-lg p-8 text-center">
         <div className="mb-6">
           <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
           <h1 className="text-2xl font-bold text-gray-900 mb-2">
@@ -83,7 +83,7 @@ export const SubscriptionSuccessPage: React.FC = () => {
           </p>
         </div>
 
-        <div className="bg-gray-50 rounded-lg p-4 mb-6">
+        <div className="bg-gray-50 rounded-[8px] p-4 mb-6">
           <h3 className="font-semibold text-gray-900 mb-2">What's included:</h3>
           <ul className="text-sm text-gray-600 space-y-1">
             <li>• Track up to 50 profiles</li>
@@ -96,7 +96,7 @@ export const SubscriptionSuccessPage: React.FC = () => {
         <div className="space-y-3">
           <button
             onClick={() => navigate('/dashboard')}
-            className="w-full bg-yellow-400 hover:bg-yellow-500 text-black font-semibold py-3 px-6 rounded-lg transition-colors flex items-center justify-center gap-2"
+            className="w-full bg-[var(--color-cpn-yellow)] hover:opacity-90 text-black font-semibold py-3 px-6 rounded-[100px] transition-all flex items-center justify-center gap-2"
           >
             Go to Dashboard
             <ArrowRight className="w-4 h-4" />
@@ -104,7 +104,7 @@ export const SubscriptionSuccessPage: React.FC = () => {
           
           <button
             onClick={() => navigate('/subscription')}
-            className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-3 px-6 rounded-lg transition-colors flex items-center justify-center gap-2"
+            className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-3 px-6 rounded-[100px] transition-colors flex items-center justify-center gap-2"
           >
             <Home className="w-4 h-4" />
             Manage Subscription

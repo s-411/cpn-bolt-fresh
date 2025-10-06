@@ -82,7 +82,7 @@ export default function PaywallModal({ isOpen, onClose }: PaywallModalProps) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm">
-      <div className="relative w-full max-w-5xl mx-4 bg-zinc-900 rounded-2xl border border-zinc-800 shadow-2xl overflow-hidden">
+      <div className="relative w-full max-w-5xl mx-4 bg-zinc-900 rounded-[8px] border border-zinc-800 shadow-2xl overflow-hidden">
         {onClose && (
           <button
             onClick={onClose}
@@ -108,13 +108,13 @@ export default function PaywallModal({ isOpen, onClose }: PaywallModalProps) {
             <div className="bg-zinc-800/50 rounded-xl p-8 border-2 border-zinc-700 hover:border-zinc-600 transition-all">
               <div className="text-center mb-6">
                 <h3 className="text-2xl font-bold text-white mb-2">{boyfriendPlan.name}</h3>
-                <div className="text-3xl font-bold text-yellow-400 mb-4">{boyfriendPlan.price}</div>
+                <div className="text-3xl font-bold text-[var(--color-cpn-yellow)] mb-4">{boyfriendPlan.price}</div>
               </div>
 
               <ul className="space-y-3 mb-8">
                 {boyfriendPlan.features.map((feature, index) => (
                   <li key={index} className="flex items-start text-zinc-300 text-sm">
-                    <span className="text-yellow-400 mr-2">✓</span>
+                    <span className="text-[var(--color-cpn-yellow)] mr-2">✓</span>
                     {feature}
                   </li>
                 ))}
@@ -123,28 +123,28 @@ export default function PaywallModal({ isOpen, onClose }: PaywallModalProps) {
               <button
                 onClick={handleSelectBoyfriendMode}
                 disabled={isLoading}
-                className="w-full bg-zinc-700 hover:bg-zinc-600 text-white font-semibold py-3 px-6 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-zinc-700 hover:bg-zinc-600 text-white font-semibold py-3 px-6 rounded-[100px] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isLoading ? 'Loading...' : 'Select Free Mode'}
               </button>
             </div>
 
-            <div className="bg-zinc-800/50 rounded-xl p-8 border-2 border-yellow-500 hover:border-yellow-400 transition-all relative">
-              <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-yellow-500 text-black text-xs font-bold px-4 py-1 rounded-full">
+            <div className="bg-zinc-800/50 rounded-[8px] p-8 border-2 border-[var(--color-cpn-yellow)] hover:border-[var(--color-cpn-yellow)] hover:opacity-90 transition-all relative">
+              <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-[var(--color-cpn-yellow)] text-black text-xs font-bold px-4 py-1 rounded-full">
                 POPULAR
               </div>
 
               <div className="text-center mb-6">
                 <h3 className="text-2xl font-bold text-white mb-2">{weeklyPlan.name}</h3>
                 <div className="text-sm text-zinc-400 mb-1">{weeklyPlan.billing}</div>
-                <div className="text-3xl font-bold text-yellow-400 mb-1">{weeklyPlan.price}</div>
+                <div className="text-3xl font-bold text-[var(--color-cpn-yellow)] mb-1">{weeklyPlan.price}</div>
                 <div className="text-sm text-zinc-400">{weeklyPlan.pricePerWeek}</div>
               </div>
 
               <ul className="space-y-3 mb-8">
                 {weeklyPlan.features.map((feature, index) => (
                   <li key={index} className="flex items-start text-zinc-300 text-sm">
-                    <span className="text-yellow-400 mr-2">✓</span>
+                    <span className="text-[var(--color-cpn-yellow)] mr-2">✓</span>
                     {feature}
                   </li>
                 ))}
@@ -153,13 +153,13 @@ export default function PaywallModal({ isOpen, onClose }: PaywallModalProps) {
               <button
                 onClick={() => handleSelectPlayerMode('weekly')}
                 disabled={isLoading}
-                className="w-full bg-yellow-500 hover:bg-yellow-400 text-black font-bold py-3 px-6 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-[var(--color-cpn-yellow)] hover:opacity-90 text-black font-bold py-3 px-6 rounded-[100px] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isLoading ? 'Loading...' : 'Activate Player Mode'}
               </button>
             </div>
 
-            <div className="bg-zinc-800/50 rounded-xl p-8 border-2 border-zinc-700 hover:border-zinc-600 transition-all relative">
+            <div className="bg-zinc-800/50 rounded-[8px] p-8 border-2 border-zinc-700 hover:border-zinc-600 transition-all relative">
               <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-green-500 text-black text-xs font-bold px-4 py-1 rounded-full">
                 {annualPlan.savings}
               </div>
@@ -167,14 +167,14 @@ export default function PaywallModal({ isOpen, onClose }: PaywallModalProps) {
               <div className="text-center mb-6">
                 <h3 className="text-2xl font-bold text-white mb-2">{annualPlan.name}</h3>
                 <div className="text-sm text-zinc-400 mb-1">{annualPlan.billing}</div>
-                <div className="text-3xl font-bold text-yellow-400 mb-1">{annualPlan.price}</div>
+                <div className="text-3xl font-bold text-[var(--color-cpn-yellow)] mb-1">{annualPlan.price}</div>
                 <div className="text-sm text-zinc-400">{annualPlan.pricePerWeek}</div>
               </div>
 
               <ul className="space-y-3 mb-8">
                 {annualPlan.features.map((feature, index) => (
                   <li key={index} className="flex items-start text-zinc-300 text-sm">
-                    <span className="text-yellow-400 mr-2">✓</span>
+                    <span className="text-[var(--color-cpn-yellow)] mr-2">✓</span>
                     {feature}
                   </li>
                 ))}
@@ -183,7 +183,7 @@ export default function PaywallModal({ isOpen, onClose }: PaywallModalProps) {
               <button
                 onClick={() => handleSelectPlayerMode('annual')}
                 disabled={isLoading}
-                className="w-full bg-yellow-500 hover:bg-yellow-400 text-black font-bold py-3 px-6 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-[var(--color-cpn-yellow)] hover:opacity-90 text-black font-bold py-3 px-6 rounded-[100px] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isLoading ? 'Loading...' : 'Activate Player Mode'}
               </button>

@@ -41,14 +41,14 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
   };
 
   return (
-    <div className={`relative rounded-2xl border-2 p-8 ${
-      isPopular 
-        ? 'border-yellow-400 bg-gradient-to-br from-yellow-50 to-orange-50' 
+    <div className={`relative rounded-[8px] border-2 p-8 ${
+      isPopular
+        ? 'border-[var(--color-cpn-yellow)] bg-gradient-to-br from-yellow-50 to-orange-50'
         : 'border-gray-200 bg-white'
     } ${isCurrentPlan ? 'ring-2 ring-green-500' : ''}`}>
       {isPopular && (
         <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-          <div className="bg-yellow-400 text-black px-4 py-1 rounded-full text-sm font-semibold flex items-center gap-1">
+          <div className="bg-[var(--color-cpn-yellow)] text-black px-4 py-1 rounded-full text-sm font-semibold flex items-center gap-1">
             <Crown className="w-4 h-4" />
             Most Popular
           </div>
@@ -72,7 +72,7 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
             isCurrentPlan
               ? 'bg-green-100 text-green-800 cursor-not-allowed'
               : isPopular
-              ? 'bg-yellow-400 hover:bg-yellow-500 text-black'
+              ? 'bg-[var(--color-cpn-yellow)] hover:opacity-90 text-black'
               : 'bg-gray-900 hover:bg-gray-800 text-white'
           }`}
         >

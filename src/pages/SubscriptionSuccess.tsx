@@ -54,9 +54,9 @@ export default function SubscriptionSuccess() {
     <div className="min-h-screen bg-black flex items-center justify-center p-4">
       <div className="max-w-md w-full">
         {isVerifying ? (
-          <div className="bg-zinc-900 rounded-2xl border border-zinc-800 p-12 text-center">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-yellow-500/10 rounded-full mb-6 animate-pulse">
-              <Loader2 className="w-8 h-8 text-yellow-400 animate-spin" />
+          <div className="bg-zinc-900 rounded-[8px] border border-zinc-800 p-12 text-center">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-[var(--color-cpn-yellow)]/10 rounded-full mb-6 animate-pulse">
+              <Loader2 className="w-8 h-8 text-[var(--color-cpn-yellow)] animate-spin" />
             </div>
             <h1 className="text-2xl font-bold text-white mb-3">
               Activating Player Mode...
@@ -66,7 +66,7 @@ export default function SubscriptionSuccess() {
             </p>
           </div>
         ) : error ? (
-          <div className="bg-zinc-900 rounded-2xl border border-red-500/20 p-12 text-center">
+          <div className="bg-zinc-900 rounded-[8px] border border-red-500/20 p-12 text-center">
             <div className="inline-flex items-center justify-center w-16 h-16 bg-red-500/10 rounded-full mb-6">
               <X className="w-8 h-8 text-red-400" />
             </div>
@@ -76,13 +76,13 @@ export default function SubscriptionSuccess() {
             <p className="text-zinc-400 mb-6">{error}</p>
             <a
               href="/girls"
-              className="inline-block bg-yellow-500 hover:bg-yellow-400 text-black font-bold py-3 px-8 rounded-lg transition-all"
+              className="inline-block bg-[var(--color-cpn-yellow)] hover:opacity-90 text-black font-bold py-3 px-8 rounded-[100px] transition-all"
             >
               Go to Dashboard
             </a>
           </div>
         ) : (
-          <div className="bg-zinc-900 rounded-2xl border border-green-500/20 p-12 text-center">
+          <div className="bg-zinc-900 rounded-[8px] border border-green-500/20 p-12 text-center">
             <div className="inline-flex items-center justify-center w-16 h-16 bg-green-500/10 rounded-full mb-6">
               <Check className="w-8 h-8 text-green-400" />
             </div>
@@ -96,7 +96,7 @@ export default function SubscriptionSuccess() {
               You now have access to all premium features
             </p>
 
-            <div className="bg-zinc-800/50 rounded-xl p-6 mb-6">
+            <div className="bg-zinc-800/50 rounded-[8px] p-6 mb-6">
               <h2 className="text-lg font-semibold text-white mb-3">What's Unlocked:</h2>
               <ul className="space-y-2 text-left">
                 <li className="flex items-start text-zinc-300 text-sm">
