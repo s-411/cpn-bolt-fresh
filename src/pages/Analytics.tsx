@@ -385,6 +385,7 @@ export function Analytics({ girls }: AnalyticsProps) {
                   <Tooltip
                     contentStyle={{ backgroundColor: '#2a2a2a', border: '1px solid #ababab', color: '#ffffff' }}
                     formatter={(value: number) => formatCurrency(value)}
+                    cursor={false}
                   />
                   <Bar dataKey="spent" />
                   {spendingData.map((entry, index) => (
@@ -405,6 +406,7 @@ export function Analytics({ girls }: AnalyticsProps) {
                   <Tooltip
                     contentStyle={{ backgroundColor: '#2a2a2a', border: '1px solid #ababab', color: '#ffffff' }}
                     formatter={(value: number) => formatCurrency(value)}
+                    cursor={false}
                   />
                   <Bar dataKey="costPerNut" />
                   {spendingData.map((entry, index) => (
@@ -428,6 +430,7 @@ export function Analytics({ girls }: AnalyticsProps) {
                   <Tooltip
                     contentStyle={{ backgroundColor: '#2a2a2a', border: '1px solid #ababab', color: '#ffffff' }}
                     formatter={(value: number) => `${value.toFixed(1)}h`}
+                    cursor={false}
                   />
                   <Bar dataKey="time" />
                   {spendingData.map((entry, index) => (
