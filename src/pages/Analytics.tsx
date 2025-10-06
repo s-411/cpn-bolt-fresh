@@ -6,6 +6,7 @@ import { formatCurrency } from '../lib/calculations';
 interface Girl {
   id: string;
   name: string;
+  rating: number;
   totalSpent: number;
   totalNuts: number;
   totalTime: number;
@@ -142,6 +143,36 @@ export function Analytics({ girls }: AnalyticsProps) {
     return `${hours}h ${mins}m`;
   };
 
+  const roiRankings = useMemo(() => {
+    const girlsWithData = girls.filter((g) => g.entryCount > 0 && g.costPerNut > 0);
+    if (girlsWithData.length === 0) return [];
+
+    return girlsWithData
+      .map((girl) => {
+        const nutsPerHour = girl.totalTime > 0 ? (girl.totalNuts / (girl.totalTime / 60)) : 0;
+        const efficiencyScore = (
+          (girl.rating / 10) * 30 +
+          (1 / girl.costPerNut) * 500 +
+          nutsPerHour * 10
+        );
+
+        return {
+          name: girl.name,
+          rating: girl.rating,
+          costPerNut: girl.costPerNut,
+          nutsPerHour,
+          efficiencyScore,
+        };
+      })
+      .sort((a, b) => b.efficiencyScore - a.efficiencyScore);
+  }, [girls]);
+
+  const getEfficiencyColor = (score: number) => {
+    if (score >= 13) return 'text-green-500';
+    if (score >= 11) return 'text-cpn-yellow';
+    return 'text-orange-500';
+  };
+
   return (
     <div className="space-y-6">
       <div>
@@ -236,6 +267,44 @@ export function Analytics({ girls }: AnalyticsProps) {
           </div>
         </div>
       </div>
+
+      {/* ROI Performance Ranking */}
+      {roiRankings.length > 0 && (
+        <div className="card-cpn">
+          <h3 className="text-lg mb-4">ROI Performance Ranking</h3>
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-cpn-gray/20">
+                  <th className="text-left py-3 px-4 text-sm font-medium text-cpn-gray">Rank</th>
+                  <th className="text-left py-3 px-4 text-sm font-medium text-cpn-gray">Name</th>
+                  <th className="text-center py-3 px-4 text-sm font-medium text-cpn-gray">Rating</th>
+                  <th className="text-right py-3 px-4 text-sm font-medium text-cpn-gray">Cost/Nut</th>
+                  <th className="text-right py-3 px-4 text-sm font-medium text-cpn-gray">Nuts/Hour</th>
+                  <th className="text-right py-3 px-4 text-sm font-medium text-cpn-gray">Efficiency Score</th>
+                </tr>
+              </thead>
+              <tbody>
+                {roiRankings.map((girl, index) => (
+                  <tr
+                    key={girl.name}
+                    className={index % 2 === 0 ? 'bg-cpn-dark/50' : 'bg-transparent'}
+                  >
+                    <td className="py-3 px-4 text-white font-bold">{index + 1}</td>
+                    <td className="py-3 px-4 text-white font-medium">{girl.name}</td>
+                    <td className="py-3 px-4 text-center text-white">{girl.rating}/10</td>
+                    <td className="py-3 px-4 text-right text-white">{formatCurrency(girl.costPerNut)}</td>
+                    <td className="py-3 px-4 text-right text-white">{girl.nutsPerHour.toFixed(2)}</td>
+                    <td className={`py-3 px-4 text-right font-bold ${getEfficiencyColor(girl.efficiencyScore)}`}>
+                      {girl.efficiencyScore.toFixed(2)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
 
       <div className="flex gap-2">
         {(['7d', '30d', '90d', 'all'] as TimeRange[]).map((range) => (
