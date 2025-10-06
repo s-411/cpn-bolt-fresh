@@ -17,6 +17,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
     { icon: BarChart3, label: 'Dashboard', path: '/dashboard' },
     { icon: Users, label: 'Profiles', path: '/profiles' },
     { icon: Crown, label: 'Subscription', path: '/subscription' },
+    { icon: Crown, label: 'Subscription', path: '/subscription' },
     { icon: Settings, label: 'Settings', path: '/settings' },
   ];
 
