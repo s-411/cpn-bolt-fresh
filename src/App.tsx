@@ -538,11 +538,33 @@ function SettingsView({ profile, girls, onSignOut }: { profile: any; girls: any[
   const handleManageSubscription = async () => {
     try {
       setIsLoadingPortal(true);
-      const portalUrl = `https://billing.stripe.com/p/login/test_your_portal_link_here`;
-      window.open(portalUrl, '_blank');
+
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        alert('Please sign in to manage your subscription');
+        return;
+      }
+
+      const apiUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/create-portal-session`;
+
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to create portal session');
+      }
+
+      const { url } = await response.json();
+      window.location.href = url;
     } catch (error) {
       console.error('Error opening billing portal:', error);
-      alert('Failed to open billing portal');
+      alert(error instanceof Error ? error.message : 'Failed to open billing portal');
     } finally {
       setIsLoadingPortal(false);
     }
