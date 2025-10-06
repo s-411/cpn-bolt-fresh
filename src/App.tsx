@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Users, TrendingUp, Settings, BarChart3, Plus, CreditCard as Edit, Trash2, LogOut, Table, Share2, Globe, Trophy } from 'lucide-react';
+import UpgradeModal from './components/UpgradeModal';
 import { AuthProvider, useAuth } from './lib/context/AuthContext';
 import { SignIn } from './pages/SignIn';
 import { SignUp } from './pages/SignUp';
@@ -18,6 +19,9 @@ import { AddDataModal } from './components/AddDataModal';
 import { EditGirlModal } from './components/EditGirlModal';
 import { EditDataModal } from './components/EditDataModal';
 import { ShareModal } from './components/ShareModal';
+import PaywallModal from './components/PaywallModal';
+import SubscriptionSuccess from './pages/SubscriptionSuccess';
+import SubscriptionGate from './components/SubscriptionGate';
 import { supabase } from './lib/supabase/client';
 import { Database } from './lib/types/database';
 import { calculateCostPerNut, calculateTimePerNut, calculateCostPerHour, formatCurrency, formatRating } from './lib/calculations';
@@ -37,7 +41,7 @@ interface GirlWithMetrics extends Girl {
 }
 
 function AppContent() {
-  const { user, profile, loading: authLoading, signOut } = useAuth();
+  const { user, profile, loading: authLoading, signOut, showPaywall, setShowPaywall } = useAuth();
   const [authView, setAuthView] = useState<'signin' | 'signup'>('signin');
   const [activeView, setActiveView] = useState<'dashboard' | 'girls' | 'overview' | 'analytics' | 'dataentry' | 'datavault' | 'leaderboards' | 'share' | 'sharecenter' | 'settings'>('dashboard');
   const [showAddGirlModal, setShowAddGirlModal] = useState(false);
@@ -157,6 +161,11 @@ function AppContent() {
   }
 
   if (!user) {
+    const isSubscriptionSuccess = window.location.pathname === '/subscription-success';
+    if (isSubscriptionSuccess) {
+      return <SubscriptionSuccess />;
+    }
+
     if (authView === 'signup') {
       return (
         <SignUp
@@ -168,7 +177,12 @@ function AppContent() {
     return <SignIn onSwitchToSignUp={() => setAuthView('signup')} />;
   }
 
-  const canAddGirl = profile?.subscription_tier === 'free' ? activeGirls.length < 1 : activeGirls.length < 50;
+  const isSubscriptionSuccess = window.location.pathname === '/subscription-success';
+  if (isSubscriptionSuccess) {
+    return <SubscriptionSuccess />;
+  }
+
+  const canAddGirl = profile?.subscription_tier === 'boyfriend' ? activeGirls.length < 1 : activeGirls.length < 50;
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row">
@@ -269,13 +283,41 @@ function AppContent() {
                 onDelete={handleDeleteGirl}
               />
             )}
-            {activeView === 'analytics' && <Analytics girls={girls.map(g => ({ ...g }))} />}
+            {activeView === 'analytics' && (
+              <SubscriptionGate
+                isLocked={profile?.subscription_tier === 'boyfriend'}
+                featureName="Analytics"
+              >
+                <Analytics girls={girls.map(g => ({ ...g }))} />
+              </SubscriptionGate>
+            )}
             {activeView === 'dataentry' && user && (
               <DataEntry userId={user.id} onSuccess={loadGirls} />
             )}
-            {activeView === 'datavault' && <DataVault />}
-            {activeView === 'leaderboards' && <Leaderboards />}
-            {activeView === 'share' && <Share />}
+            {activeView === 'datavault' && (
+              <SubscriptionGate
+                isLocked={profile?.subscription_tier === 'boyfriend'}
+                featureName="Data Vault"
+              >
+                <DataVault />
+              </SubscriptionGate>
+            )}
+            {activeView === 'leaderboards' && (
+              <SubscriptionGate
+                isLocked={profile?.subscription_tier === 'boyfriend'}
+                featureName="Leaderboards"
+              >
+                <Leaderboards />
+              </SubscriptionGate>
+            )}
+            {activeView === 'share' && (
+              <SubscriptionGate
+                isLocked={profile?.subscription_tier === 'boyfriend'}
+                featureName="Share"
+              >
+                <Share />
+              </SubscriptionGate>
+            )}
             {activeView === 'sharecenter' && <ShareCenter />}
             {activeView === 'settings' && <SettingsView profile={profile} girls={girls} onSignOut={signOut} />}
           </>
@@ -294,7 +336,13 @@ function AppContent() {
           </div>
           <div
             className="flex items-center justify-center w-14 h-14 -mt-8 bg-cpn-yellow rounded-full cursor-pointer"
-            onClick={() => canAddGirl ? setShowAddGirlModal(true) : alert('Upgrade to Premium for unlimited profiles')}
+            onClick={() => {
+              if (canAddGirl) {
+                setShowAddGirlModal(true);
+              } else {
+                setActiveView('girls');
+              }
+            }}
           >
             <Plus size={28} className="text-cpn-dark" />
           </div>
@@ -308,6 +356,11 @@ function AppContent() {
           </div>
         </div>
       </nav>
+
+      <PaywallModal
+        isOpen={showPaywall}
+        onClose={() => setShowPaywall(false)}
+      />
 
       {user && (
         <>
@@ -386,10 +439,10 @@ function GirlsView({ girls, onAddGirl, onAddData, onEdit, onDelete, onViewDetail
         </button>
       </div>
 
-      {!canAddGirl && subscriptionTier === 'free' && (
+      {!canAddGirl && subscriptionTier === 'boyfriend' && (
         <div className="card-cpn bg-cpn-yellow/10 border-cpn-yellow/50">
           <p className="text-cpn-yellow text-sm">
-            Free tier limited to 1 active profile. Upgrade to Premium for unlimited profiles.
+            Boyfriend Mode is limited to 1 active profile. Activate Player Mode for unlimited profiles.
           </p>
         </div>
       )}
@@ -481,54 +534,131 @@ function GirlsView({ girls, onAddGirl, onAddData, onEdit, onDelete, onViewDetail
 }
 
 function SettingsView({ profile, girls, onSignOut }: { profile: any; girls: any[]; onSignOut: () => void }) {
-  return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-3xl mb-2">Settings</h2>
-        <p className="text-cpn-gray">Manage your preferences and account</p>
-      </div>
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const [isLoadingPortal, setIsLoadingPortal] = useState(false);
 
-      <div className="space-y-4">
-        <div className="card-cpn">
-          <h3 className="text-xl mb-4">Profile</h3>
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm text-cpn-gray mb-2">Email</label>
-              <input type="email" className="input-cpn w-full" value={profile?.email || ''} disabled />
-            </div>
-            <div>
-              <label className="block text-sm text-cpn-gray mb-2">Account Created</label>
-              <input
-                type="text"
-                className="input-cpn w-full"
-                value={profile?.created_at ? new Date(profile.created_at).toLocaleDateString() : ''}
-                disabled
-              />
-            </div>
-          </div>
+  const handleManageSubscription = async () => {
+    try {
+      setIsLoadingPortal(true);
+      const portalUrl = `https://billing.stripe.com/p/login/test_your_portal_link_here`;
+      window.open(portalUrl, '_blank');
+    } catch (error) {
+      console.error('Error opening billing portal:', error);
+      alert('Failed to open billing portal');
+    } finally {
+      setIsLoadingPortal(false);
+    }
+  };
+
+  const getSubscriptionDisplay = () => {
+    const tier = profile?.subscription_tier || 'boyfriend';
+    if (tier === 'boyfriend') {
+      return {
+        name: 'Boyfriend Mode',
+        description: 'Limited to 1 active profile',
+        isFree: true,
+      };
+    } else if (tier === 'player') {
+      const planType = profile?.subscription_plan_type;
+      return {
+        name: 'Player Mode',
+        description: planType === 'weekly' ? 'Weekly Plan - $1.99/week' : 'Annual Plan - $27/year',
+        isFree: false,
+      };
+    }
+    return {
+      name: 'Unknown',
+      description: 'Contact support',
+      isFree: true,
+    };
+  };
+
+  const subscription = getSubscriptionDisplay();
+
+  return (
+    <>
+      <div className="space-y-6">
+        <div>
+          <h2 className="text-3xl mb-2">Settings</h2>
+          <p className="text-cpn-gray">Manage your preferences and account</p>
         </div>
 
-        <div className="card-cpn">
-          <h3 className="text-xl mb-4">Subscription</h3>
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="font-bold text-lg capitalize">{profile?.subscription_tier || 'Free'} Tier</p>
-              <p className="text-sm text-cpn-gray">
-                {profile?.subscription_tier === 'free' ? 'Limited to 1 active profile' : 'Unlimited profiles'}
-              </p>
+        <div className="space-y-4">
+          <div className="card-cpn">
+            <h3 className="text-xl mb-4">Profile</h3>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm text-cpn-gray mb-2">Email</label>
+                <input type="email" className="input-cpn w-full" value={profile?.email || ''} disabled />
+              </div>
+              <div>
+                <label className="block text-sm text-cpn-gray mb-2">Account Created</label>
+                <input
+                  type="text"
+                  className="input-cpn w-full"
+                  value={profile?.created_at ? new Date(profile.created_at).toLocaleDateString() : ''}
+                  disabled
+                />
+              </div>
             </div>
-            {profile?.subscription_tier === 'free' && (
-              <button className="btn-cpn">Upgrade to Premium</button>
+          </div>
+
+          <div className="card-cpn">
+            <h3 className="text-xl mb-4">Subscription</h3>
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <p className="font-bold text-lg">{subscription.name}</p>
+                <p className="text-sm text-cpn-gray">{subscription.description}</p>
+                {!subscription.isFree && profile?.subscription_status && (
+                  <p className="text-xs text-cpn-gray mt-1 capitalize">
+                    Status: {profile.subscription_status}
+                  </p>
+                )}
+              </div>
+              {subscription.isFree ? (
+                <button
+                  className="btn-cpn"
+                  onClick={() => setShowUpgradeModal(true)}
+                >
+                  Activate Player Mode
+                </button>
+              ) : (
+                <button
+                  className="btn-secondary"
+                  onClick={handleManageSubscription}
+                  disabled={isLoadingPortal}
+                >
+                  {isLoadingPortal ? 'Loading...' : 'Manage Billing'}
+                </button>
+              )}
+            </div>
+
+            {subscription.isFree && (
+              <div className="p-4 bg-cpn-dark rounded-lg">
+                <p className="text-sm text-cpn-gray mb-3">
+                  Activate Player Mode to unlock:
+                </p>
+                <ul className="space-y-1 text-sm text-cpn-gray">
+                  <li>• Unlimited profiles</li>
+                  <li>• Full analytics access</li>
+                  <li>• Data vault</li>
+                  <li>• Leaderboards</li>
+                  <li>• Share features</li>
+                </ul>
+                <p className="text-xs text-cpn-gray mt-3">
+                  Starting at just $1.99/week or $27/year
+                </p>
+              </div>
+            )}
+
+            {!subscription.isFree && profile?.subscription_period_end && (
+              <div className="p-4 bg-cpn-dark rounded-lg">
+                <p className="text-sm text-cpn-gray">
+                  Next billing date: {new Date(profile.subscription_period_end).toLocaleDateString()}
+                </p>
+              </div>
             )}
           </div>
-          {profile?.subscription_tier === 'free' && (
-            <div className="mt-4 p-4 bg-cpn-dark rounded-lg">
-              <p className="text-sm text-cpn-gray">
-                Upgrade to Premium for $1.99/week and unlock unlimited profiles, advanced analytics, and priority support.
-              </p>
-            </div>
-          )}
-        </div>
 
         <div className="card-cpn">
           <h3 className="text-xl mb-4">Data Management</h3>
@@ -561,6 +691,13 @@ function SettingsView({ profile, girls, onSignOut }: { profile: any; girls: any[
         </div>
       </div>
     </div>
+
+      <UpgradeModal
+        isOpen={showUpgradeModal}
+        onClose={() => setShowUpgradeModal(false)}
+        featureName="all premium features"
+      />
+    </>
   );
 }
 

@@ -10,6 +10,8 @@ interface AuthContextType {
   profile: UserProfile | null;
   session: Session | null;
   loading: boolean;
+  showPaywall: boolean;
+  setShowPaywall: (show: boolean) => void;
   signUp: (email: string, password: string) => Promise<{ error: AuthError | null }>;
   signIn: (email: string, password: string) => Promise<{ error: AuthError | null }>;
   signOut: () => Promise<void>;
@@ -23,6 +25,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
+  const [showPaywall, setShowPaywall] = useState(false);
 
   const fetchProfile = async (userId: string) => {
     try {
@@ -34,6 +37,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       if (error) throw error;
       setProfile(data);
+
+      if (data && !data.has_seen_paywall) {
+        setShowPaywall(true);
+      }
     } catch (error) {
       console.error('Error fetching profile:', error);
       setProfile(null);
@@ -98,6 +105,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     profile,
     session,
     loading,
+    showPaywall,
+    setShowPaywall,
     signUp,
     signIn,
     signOut,
