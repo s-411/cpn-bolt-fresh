@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Users, TrendingUp, Settings, BarChart3, Plus, CreditCard as Edit, Trash2, LogOut, Table, Share2, Globe, Trophy } from 'lucide-react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import UpgradeModal from './components/UpgradeModal';
-import { AuthProvider, useAuth } from './lib/context/AuthContext';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { SignIn } from './pages/SignIn';
 import { SignUp } from './pages/SignUp';
 import { Dashboard } from './pages/Dashboard';
@@ -15,15 +14,10 @@ import { Share } from './pages/Share';
 import { ShareCenter } from './pages/ShareCenter';
 import { DataVault } from './pages/DataVault';
 import { Leaderboards } from './pages/Leaderboards';
-import { LoginPage } from './pages/LoginPage';
-import { DashboardPage } from './pages/DashboardPage';
-import { SubscriptionPage } from './pages/SubscriptionPage';
-import { SubscriptionSuccessPage } from './pages/SubscriptionSuccessPage';
 import { AddGirlModal } from './components/AddGirlModal';
 import { AddDataModal } from './components/AddDataModal';
 import { EditGirlModal } from './components/EditGirlModal';
 import { ShareModal } from './components/ShareModal';
-import { ProtectedRoute } from './components/ProtectedRoute';
 import PaywallModal from './components/PaywallModal';
 import SubscriptionSuccess from './pages/SubscriptionSuccess';
 import SubscriptionGate from './components/SubscriptionGate';
@@ -709,15 +703,6 @@ function SettingsView({ profile, girls, onSignOut }: { profile: any; girls: any[
 function App() {
   return (
     <AuthProvider>
-      <Router>
-        <Routes>
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
-          <Route path="/subscription" element={<ProtectedRoute><SubscriptionPage /></ProtectedRoute>} />
-          <Route path="/subscription/success" element={<ProtectedRoute><SubscriptionSuccessPage /></ProtectedRoute>} />
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
-        </Routes>
-      </Router>
       <AppContent />
     </AuthProvider>
   );
