@@ -244,39 +244,39 @@ function AppContent() {
         </div>
 
         <nav className="flex-1 space-y-2">
-          <div className={`sidebar-item ${activeView === 'dashboard' ? 'active' : ''}`} onClick={() => setActiveView('dashboard')}>
+          <div className={`sidebar-item ${activeView === 'dashboard' ? 'active' : ''}`} onClick={() => { setAddingDataForGirl(null); setActiveView('dashboard'); }}>
             <TrendingUp size={20} />
             <span>Dashboard</span>
           </div>
-          <div className={`sidebar-item ${activeView === 'girls' ? 'active' : ''}`} onClick={() => setActiveView('girls')}>
+          <div className={`sidebar-item ${activeView === 'girls' ? 'active' : ''}`} onClick={() => { setAddingDataForGirl(null); setActiveView('girls'); }}>
             <Users size={20} />
             <span>Girls</span>
           </div>
-          <div className={`sidebar-item ${activeView === 'dataentry' ? 'active' : ''}`} onClick={() => setActiveView('dataentry')}>
+          <div className={`sidebar-item ${activeView === 'dataentry' ? 'active' : ''}`} onClick={() => { setAddingDataForGirl(null); setActiveView('dataentry'); }}>
             <Plus size={20} />
             <span>Quick Data Entry</span>
           </div>
-          <div className={`sidebar-item ${activeView === 'overview' ? 'active' : ''}`} onClick={() => setActiveView('overview')}>
+          <div className={`sidebar-item ${activeView === 'overview' ? 'active' : ''}`} onClick={() => { setAddingDataForGirl(null); setActiveView('overview'); }}>
             <Table size={20} />
             <span>Overview</span>
           </div>
-          <div className={`sidebar-item ${activeView === 'analytics' ? 'active' : ''}`} onClick={() => setActiveView('analytics')}>
+          <div className={`sidebar-item ${activeView === 'analytics' ? 'active' : ''}`} onClick={() => { setAddingDataForGirl(null); setActiveView('analytics'); }}>
             <BarChart3 size={20} />
             <span>Analytics</span>
           </div>
-          <div className={`sidebar-item ${activeView === 'datavault' ? 'active' : ''}`} onClick={() => setActiveView('datavault')}>
+          <div className={`sidebar-item ${activeView === 'datavault' ? 'active' : ''}`} onClick={() => { setAddingDataForGirl(null); setActiveView('datavault'); }}>
             <Globe size={20} />
             <span>Data Vault</span>
           </div>
-          <div className={`sidebar-item ${activeView === 'leaderboards' ? 'active' : ''}`} onClick={() => setActiveView('leaderboards')}>
+          <div className={`sidebar-item ${activeView === 'leaderboards' ? 'active' : ''}`} onClick={() => { setAddingDataForGirl(null); setActiveView('leaderboards'); }}>
             <Trophy size={20} />
             <span>Leaderboards</span>
           </div>
-          <div className={`sidebar-item ${activeView === 'share' ? 'active' : ''}`} onClick={() => setActiveView('share')}>
+          <div className={`sidebar-item ${activeView === 'share' ? 'active' : ''}`} onClick={() => { setAddingDataForGirl(null); setActiveView('share'); }}>
             <Share2 size={20} />
             <span>Share</span>
           </div>
-          <div className={`sidebar-item ${activeView === 'settings' ? 'active' : ''}`} onClick={() => setActiveView('settings')}>
+          <div className={`sidebar-item ${activeView === 'settings' ? 'active' : ''}`} onClick={() => { setAddingDataForGirl(null); setActiveView('settings'); }}>
             <Settings size={20} />
             <span>Settings</span>
           </div>
@@ -374,11 +374,11 @@ function AppContent() {
 
       <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-cpn-dark px-2 py-3" style={{ borderTop: '1px solid rgba(171, 171, 171, 0.2)' }}>
         <div className="flex items-center justify-around">
-          <div className={`mobile-nav-item ${activeView === 'dashboard' ? 'active' : ''}`} onClick={() => setActiveView('dashboard')}>
+          <div className={`mobile-nav-item ${activeView === 'dashboard' ? 'active' : ''}`} onClick={() => { setAddingDataForGirl(null); setActiveView('dashboard'); }}>
             <TrendingUp size={20} />
             <span className="text-xs">Home</span>
           </div>
-          <div className={`mobile-nav-item ${activeView === 'dataentry' ? 'active' : ''}`} onClick={() => setActiveView('dataentry')}>
+          <div className={`mobile-nav-item ${activeView === 'dataentry' ? 'active' : ''}`} onClick={() => { setAddingDataForGirl(null); setActiveView('dataentry'); }}>
             <Plus size={20} />
             <span className="text-xs">Entry</span>
           </div>
@@ -388,17 +388,18 @@ function AppContent() {
               if (canAddGirl) {
                 setShowAddGirlModal(true);
               } else {
+                setAddingDataForGirl(null);
                 setActiveView('girls');
               }
             }}
           >
             <Plus size={28} className="text-cpn-dark" />
           </div>
-          <div className={`mobile-nav-item ${activeView === 'share' ? 'active' : ''}`} onClick={() => setActiveView('share')}>
+          <div className={`mobile-nav-item ${activeView === 'share' ? 'active' : ''}`} onClick={() => { setAddingDataForGirl(null); setActiveView('share'); }}>
             <Share2 size={20} />
             <span className="text-xs">Share</span>
           </div>
-          <div className={`mobile-nav-item ${activeView === 'settings' ? 'active' : ''}`} onClick={() => setActiveView('settings')}>
+          <div className={`mobile-nav-item ${activeView === 'settings' ? 'active' : ''}`} onClick={() => { setAddingDataForGirl(null); setActiveView('settings'); }}>
             <Settings size={20} />
             <span className="text-xs">More</span>
           </div>
