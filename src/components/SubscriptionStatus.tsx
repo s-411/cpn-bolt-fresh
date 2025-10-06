@@ -1,5 +1,5 @@
 import React from 'react';
-import { Crown, Calendar } from 'lucide-react';
+import { Crown } from 'lucide-react';
 import { getProductByPriceId, formatPrice } from '../stripe-config';
 
 interface SubscriptionStatusProps {
@@ -41,17 +41,9 @@ export const SubscriptionStatus: React.FC<SubscriptionStatusProps> = ({
     }
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
-    });
-  };
-
   return (
     <div className="bg-white rounded-lg border border-gray-200 p-4">
-      <div className="flex items-center gap-3 mb-3">
+      <div className="flex items-center gap-3">
         <Crown className="w-5 h-5 text-yellow-500" />
         <div>
           <h3 className="font-semibold text-gray-900">{getTierDisplay()}</h3>
@@ -62,20 +54,6 @@ export const SubscriptionStatus: React.FC<SubscriptionStatusProps> = ({
           )}
         </div>
       </div>
-      
-      {subscriptionPeriodEnd && subscriptionStatus === 'active' && (
-        <div className="flex items-center gap-2 text-sm text-gray-600">
-          <Calendar className="w-4 h-4" />
-          <span>Renews on {formatDate(subscriptionPeriodEnd)}</span>
-        </div>
-      )}
-      
-      {subscriptionPeriodEnd && subscriptionStatus === 'canceled' && (
-        <div className="flex items-center gap-2 text-sm text-gray-600">
-          <Calendar className="w-4 h-4" />
-          <span>Expires on {formatDate(subscriptionPeriodEnd)}</span>
-        </div>
-      )}
     </div>
   );
 };
