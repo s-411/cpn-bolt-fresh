@@ -384,6 +384,8 @@ export function Analytics({ girls }: AnalyticsProps) {
                   <YAxis stroke="#ababab" domain={[0, 600]} ticks={[0, 150, 300, 450, 600]} />
                   <Tooltip
                     contentStyle={{ backgroundColor: '#2a2a2a', border: '1px solid #ababab', color: '#ffffff' }}
+                    itemStyle={{ color: '#ffffff' }}
+                    labelStyle={{ color: '#ffffff' }}
                     formatter={(value: number) => formatCurrency(value)}
                     cursor={false}
                   />
@@ -405,6 +407,8 @@ export function Analytics({ girls }: AnalyticsProps) {
                   <YAxis stroke="#ababab" domain={[0, 120]} />
                   <Tooltip
                     contentStyle={{ backgroundColor: '#2a2a2a', border: '1px solid #ababab', color: '#ffffff' }}
+                    itemStyle={{ color: '#ffffff' }}
+                    labelStyle={{ color: '#ffffff' }}
                     formatter={(value: number) => formatCurrency(value)}
                     cursor={false}
                   />
@@ -429,6 +433,8 @@ export function Analytics({ girls }: AnalyticsProps) {
                   <YAxis stroke="#ababab" domain={[0, 40]} label={{ value: 'Hours', angle: -90, position: 'insideLeft' }} />
                   <Tooltip
                     contentStyle={{ backgroundColor: '#2a2a2a', border: '1px solid #ababab', color: '#ffffff' }}
+                    itemStyle={{ color: '#ffffff' }}
+                    labelStyle={{ color: '#ffffff' }}
                     formatter={(value: number) => `${value.toFixed(1)}h`}
                     cursor={false}
                   />
@@ -463,6 +469,8 @@ export function Analytics({ girls }: AnalyticsProps) {
                   </Pie>
                   <Tooltip
                     contentStyle={{ backgroundColor: '#2a2a2a', border: '1px solid #ababab', color: '#ffffff' }}
+                    itemStyle={{ color: '#ffffff' }}
+                    labelStyle={{ color: '#ffffff' }}
                     formatter={(value: number) => formatCurrency(value)}
                   />
                 </PieChart>
@@ -495,6 +503,8 @@ export function Analytics({ girls }: AnalyticsProps) {
                   />
                   <Tooltip
                     contentStyle={{ backgroundColor: '#2a2a2a', border: '1px solid #ababab', color: '#ffffff' }}
+                    itemStyle={{ color: '#ffffff' }}
+                    labelStyle={{ color: '#ffffff' }}
                     formatter={(value: number) => formatCurrency(value)}
                     cursor={{ strokeDasharray: '3 3' }}
                   />
