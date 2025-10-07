@@ -770,7 +770,7 @@ function App() {
   return (
     <AuthProvider>
       <Routes>
-        <Route path="/onboarding" element={<OnboardingPage />} />
+        <Route path="/onboarding/*" element={<OnboardingPage />} />
         <Route path="/*" element={<AppContent />} />
       </Routes>
     </AuthProvider>
