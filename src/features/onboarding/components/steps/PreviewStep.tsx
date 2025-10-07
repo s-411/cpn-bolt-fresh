@@ -1,5 +1,5 @@
 import type { OnboardingFormData } from '../../types/onboarding.types';
-import { calculateCostPerNut, formatCurrency } from '../../../../../lib/calculations';
+import { calculateCostPerNut, formatCurrency } from '../../../../lib/calculations';
 
 interface PreviewStepProps {
   girlData: OnboardingFormData['girl'];

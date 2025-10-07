@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import { Users, TrendingUp, Settings, BarChart3, Plus, CreditCard as Edit, Trash2, LogOut, Table, Share2, Globe, Trophy } from 'lucide-react';
 import { isSubscriptionSuccessPage } from './lib/urlUtils';
 import UpgradeModal from './components/UpgradeModal';
@@ -17,6 +18,7 @@ import { Share } from './pages/Share';
 import { ShareCenter } from './pages/ShareCenter';
 import { DataVault } from './pages/DataVault';
 import { Leaderboards } from './pages/Leaderboards';
+import { OnboardingPage } from './pages/OnboardingPage';
 import { AddGirlModal } from './components/AddGirlModal';
 import { AddDataModal } from './components/AddDataModal';
 import { EditGirlModal } from './components/EditGirlModal';
@@ -43,6 +45,8 @@ interface GirlWithMetrics extends Girl {
 }
 
 function AppContent() {
+  const location = useLocation();
+  const navigate = useNavigate();
   const { user, profile, loading: authLoading, signOut, showPaywall, setShowPaywall } = useAuth();
   const [authView, setAuthView] = useState<'signin' | 'signup' | 'resetpassword' | 'passwordupdate'>('signin');
   const [activeView, setActiveView] = useState<'dashboard' | 'girls' | 'overview' | 'analytics' | 'dataentry' | 'datavault' | 'leaderboards' | 'share' | 'sharecenter' | 'settings'>('dashboard');
@@ -63,13 +67,12 @@ function AppContent() {
   }, [user]);
 
   useEffect(() => {
-    const path = window.location.pathname;
-    if (path === '/password-update') {
+    if (location.pathname === '/password-update') {
       setAuthView('passwordupdate');
-    } else if (path === '/reset-password') {
+    } else if (location.pathname === '/reset-password') {
       setAuthView('resetpassword');
     }
-  }, []);
+  }, [location.pathname]);
 
   useEffect(() => {
     const handleHashChange = () => {
@@ -180,11 +183,11 @@ function AppContent() {
         <SignUp
           onSwitchToSignIn={() => {
             setAuthView('signin');
-            window.history.pushState({}, '', '/');
+            navigate('/');
           }}
           onSuccess={() => {
             setAuthView('signin');
-            window.history.pushState({}, '', '/');
+            navigate('/');
           }}
         />
       );
@@ -195,7 +198,7 @@ function AppContent() {
         <ResetPassword
           onSwitchToSignIn={() => {
             setAuthView('signin');
-            window.history.pushState({}, '', '/');
+            navigate('/');
           }}
         />
       );
@@ -206,7 +209,7 @@ function AppContent() {
         <PasswordUpdate
           onSwitchToSignIn={() => {
             setAuthView('signin');
-            window.history.pushState({}, '', '/');
+            navigate('/');
           }}
         />
       );
@@ -216,11 +219,11 @@ function AppContent() {
       <SignIn
         onSwitchToSignUp={() => {
           setAuthView('signup');
-          window.history.pushState({}, '', '/signup');
+          navigate('/signup');
         }}
         onSwitchToResetPassword={() => {
           setAuthView('resetpassword');
-          window.history.pushState({}, '', '/reset-password');
+          navigate('/reset-password');
         }}
       />
     );
@@ -766,7 +769,10 @@ function SettingsView({ profile, girls, onSignOut }: { profile: any; girls: any[
 function App() {
   return (
     <AuthProvider>
-      <AppContent />
+      <Routes>
+        <Route path="/onboarding" element={<OnboardingPage />} />
+        <Route path="/*" element={<AppContent />} />
+      </Routes>
     </AuthProvider>
   );
 }
