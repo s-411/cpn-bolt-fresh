@@ -3,6 +3,38 @@ import type { User } from '@supabase/supabase-js';
 import type { OnboardingSession } from '../types/onboarding.types';
 
 export class AnonymousAuthService {
+  private static readonly AUTH_ERROR_MESSAGES: Record<string, string> = {
+    'anonymous_provider_disabled': 'Anonymous sign-in is not enabled. Please enable it in Supabase Dashboard > Authentication > Providers.',
+    'email_exists': 'This email is already registered. Please sign in instead.',
+    'invalid_credentials': 'Invalid email or password.',
+    'user_not_found': 'User not found.',
+  };
+
+  static getErrorMessage(error: Error): string {
+    const message = error.message.toLowerCase();
+    for (const [key, value] of Object.entries(this.AUTH_ERROR_MESSAGES)) {
+      if (message.includes(key)) {
+        return value;
+      }
+    }
+    return error.message;
+  }
+
+  static async isAnonymousAuthEnabled(): Promise<boolean> {
+    try {
+      const testResult = await supabase.auth.signInAnonymously();
+      if (testResult.data.user) {
+        await supabase.auth.signOut();
+        return true;
+      }
+      return false;
+    } catch (error: any) {
+      if (error.message?.includes('anonymous_provider_disabled')) {
+        return false;
+      }
+      return false;
+    }
+  }
   static async createAnonymousSession(): Promise<{
     user: User | null;
     session: OnboardingSession | null;
@@ -38,11 +70,12 @@ export class AnonymousAuthService {
         error: null,
       };
     } catch (error) {
-      console.error('Failed to create anonymous session:', error);
+      const err = error as Error;
+      console.error('Failed to create anonymous session:', err);
       return {
         user: null,
         session: null,
-        error: error as Error,
+        error: new Error(this.getErrorMessage(err)),
       };
     }
   }
@@ -54,6 +87,7 @@ export class AnonymousAuthService {
         .select('*')
         .eq('user_id', userId)
         .eq('is_completed', false)
+        .gt('expires_at', new Date().toISOString())
         .order('created_at', { ascending: false })
         .limit(1)
         .maybeSingle();
@@ -64,6 +98,10 @@ export class AnonymousAuthService {
       console.error('Failed to get current session:', error);
       return null;
     }
+  }
+
+  static isSessionExpired(session: OnboardingSession): boolean {
+    return new Date(session.expires_at) < new Date();
   }
 
   static async updateStep(sessionId: string, step: number): Promise<boolean> {
@@ -82,17 +120,27 @@ export class AnonymousAuthService {
   }
 
   static async convertAnonymousToPermanent(
-    email: string
+    email: string,
+    password: string
   ): Promise<{ error: Error | null }> {
     try {
-      const { error } = await supabase.auth.updateUser({ email });
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user?.is_anonymous) {
+        throw new Error('User is not anonymous');
+      }
+
+      const { error } = await supabase.auth.updateUser({
+        email,
+        password,
+      });
 
       if (error) throw error;
 
       return { error: null };
     } catch (error) {
-      console.error('Failed to convert anonymous user:', error);
-      return { error: error as Error };
+      const err = error as Error;
+      console.error('Failed to convert anonymous user:', err);
+      return { error: new Error(this.getErrorMessage(err)) };
     }
   }
 
