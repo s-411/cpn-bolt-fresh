@@ -27,8 +27,7 @@
 - [ ] Git branch created: `feature/anonymous-onboarding`
 
 ### Required Tools
-- Supabase CLI installed
-- Node.js 18+ and npm
+- Bolt Database access
 - Database migration tool access
 - Browser DevTools for testing
 
