@@ -109,8 +109,8 @@ src/
 **Task**: Verify Supabase connection and anonymous auth capability
 
 **Actions**:
-- [ ] Test Supabase client connection
-- [ ] Verify anonymous auth is enabled in Supabase dashboard
+- [ ] Test Bolt DB client connection
+- [ ] Verify anonymous auth is enabled in Bolt DB 
 - [ ] Check RLS policies are active
 - [ ] Confirm service role key is NOT exposed to client
 
