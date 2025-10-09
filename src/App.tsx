@@ -24,6 +24,7 @@ import { CheckoutSuccessPage } from './pages/CheckoutSuccessPage';
 import { Step1Page } from './pages/step-onboarding/Step1Page';
 import { Step2Page } from './pages/step-onboarding/Step2Page';
 import { Step3Page } from './pages/step-onboarding/Step3Page';
+import { Step4Page } from './pages/step-onboarding/Step4Page';
 import { AddGirlModal } from './components/AddGirlModal';
 import { AddDataModal } from './components/AddDataModal';
 import { EditGirlModal } from './components/EditGirlModal';
@@ -779,6 +780,7 @@ function App() {
         <Route path="/step-1" element={<Step1Page />} />
         <Route path="/step-2" element={<Step2Page />} />
         <Route path="/step-3" element={<Step3Page />} />
+        <Route path="/step-4" element={<Step4Page />} />
         <Route path="/upgrade" element={<UpgradePage />} />
         <Route path="/checkout/success" element={<CheckoutSuccessPage />} />
         <Route path="/*" element={<AppContent />} />
