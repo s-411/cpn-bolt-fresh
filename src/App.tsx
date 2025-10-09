@@ -19,6 +19,8 @@ import { ShareCenter } from './pages/ShareCenter';
 import { DataVault } from './pages/DataVault';
 import { Leaderboards } from './pages/Leaderboards';
 import { OnboardingPage } from './pages/OnboardingPage';
+import { UpgradePage } from './pages/UpgradePage';
+import { CheckoutSuccessPage } from './pages/CheckoutSuccessPage';
 import { AddGirlModal } from './components/AddGirlModal';
 import { AddDataModal } from './components/AddDataModal';
 import { EditGirlModal } from './components/EditGirlModal';
@@ -771,6 +773,8 @@ function App() {
     <AuthProvider>
       <Routes>
         <Route path="/onboarding/*" element={<OnboardingPage />} />
+        <Route path="/upgrade" element={<UpgradePage />} />
+        <Route path="/checkout/success" element={<CheckoutSuccessPage />} />
         <Route path="/*" element={<AppContent />} />
       </Routes>
     </AuthProvider>

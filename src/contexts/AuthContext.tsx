@@ -17,6 +17,7 @@ interface AuthContextType {
   signOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
   resetPassword: (email: string) => Promise<{ error: AuthError | null }>;
+  refreshUser: () => Promise<void>;
   updatePassword: (newPassword: string) => Promise<{ error: AuthError | null }>;
 }
 
@@ -28,6 +29,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
   const [showPaywall, setShowPaywall] = useState(false);
+
+  const refreshUser = async () => {
+    try {
+      const { data: { user: authUser } } = await supabase.auth.getUser();
+      if (authUser) {
+        const { data: userData } = await supabase
+          .from('users')
+          .select('*')
+          .eq('id', authUser.id)
+          .single();
+        
+        if (userData) {
+          setUser({ ...authUser, ...userData });
+        }
+      }
+    } catch (error) {
+      console.error('Failed to refresh user:', error);
+    }
+  };
 
   const fetchProfile = async (userId: string) => {
     try {
@@ -152,6 +172,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     signUp,
     signIn,
     signOut,
+    refreshUser,
     refreshProfile,
     resetPassword,
     updatePassword,
