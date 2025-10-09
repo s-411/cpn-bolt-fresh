@@ -32,7 +32,6 @@ import { AddGirlModal } from './components/AddGirlModal';
 import { AddDataModal } from './components/AddDataModal';
 import { EditGirlModal } from './components/EditGirlModal';
 import { ShareModal } from './components/ShareModal';
-import PaywallModal from './components/PaywallModal';
 import SubscriptionSuccess from './pages/SubscriptionSuccess';
 import SubscriptionGate from './components/SubscriptionGate';
 import { supabase } from './lib/supabase/client';
@@ -417,11 +416,6 @@ function AppContent() {
           </div>
         </div>
       </nav>
-
-      <PaywallModal
-        isOpen={showPaywall}
-        onClose={() => setShowPaywall(false)}
-      />
 
       {user && (
         <>
