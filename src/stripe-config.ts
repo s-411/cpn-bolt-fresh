@@ -29,13 +29,13 @@ export const STRIPE_PRODUCTS: StripeProduct[] = [
   }
 ];
 
-export const getProductByPriceId = (priceId: string): StripeProduct | undefined => {
+export function getProductByPriceId(priceId: string): StripeProduct | undefined {
   return STRIPE_PRODUCTS.find(product => product.priceId === priceId);
-};
+}
 
-export const formatPrice = (price: number, currency: string = 'usd'): string => {
+export function formatPrice(price: number, currency: string = 'usd'): string {
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: currency.toUpperCase(),
   }).format(price);
-};
+}

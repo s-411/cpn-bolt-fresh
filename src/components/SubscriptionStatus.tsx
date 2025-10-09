@@ -1,59 +1,49 @@
-import React from 'react';
-import { Crown } from 'lucide-react';
-import { getProductByPriceId, formatPrice } from '../stripe-config';
+import { Crown, Zap, User } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
+import { getProductByPriceId } from '../stripe-config';
 
-interface SubscriptionStatusProps {
-  subscriptionTier: string;
-  subscriptionStatus?: string;
-  subscriptionPeriodEnd?: string;
-  stripePriceId?: string;
-}
+export function SubscriptionStatus() {
+  const { user } = useAuth();
 
-export const SubscriptionStatus: React.FC<SubscriptionStatusProps> = ({
-  subscriptionTier,
-  subscriptionStatus,
-  subscriptionPeriodEnd,
-  stripePriceId
-}) => {
-  const getStatusColor = () => {
-    switch (subscriptionStatus) {
-      case 'active': return 'text-green-600 bg-green-100';
-      case 'past_due': return 'text-yellow-600 bg-yellow-100';
-      case 'canceled': return 'text-red-600 bg-red-100';
-      default: return 'text-gray-600 bg-gray-100';
+  if (!user) return null;
+
+  const getSubscriptionDisplay = () => {
+    switch (user.subscription_tier) {
+      case 'player':
+        const product = getProductByPriceId(user.stripe_price_id || '');
+        const planName = product?.name || 'Player Mode';
+        return {
+          icon: user.subscription_plan_type === 'annual' ? Crown : Zap,
+          name: planName,
+          color: 'text-cpn-yellow',
+          bgColor: 'bg-cpn-yellow/10'
+        };
+      case 'boyfriend':
+        return {
+          icon: User,
+          name: 'Boyfriend Mode',
+          color: 'text-blue-400',
+          bgColor: 'bg-blue-400/10'
+        };
+      default:
+        return {
+          icon: User,
+          name: 'Free',
+          color: 'text-gray-400',
+          bgColor: 'bg-gray-400/10'
+        };
     }
   };
 
-  const getTierDisplay = () => {
-    if (stripePriceId) {
-      const product = getProductByPriceId(stripePriceId);
-      if (product) {
-        return product.name;
-      }
-    }
-    
-    switch (subscriptionTier) {
-      case 'boyfriend': return 'Boyfriend Mode';
-      case 'player': return 'Player Mode';
-      case 'premium': return 'Premium';
-      case 'lifetime': return 'Lifetime';
-      default: return 'Free';
-    }
-  };
+  const subscription = getSubscriptionDisplay();
+  const Icon = subscription.icon;
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 p-4">
-      <div className="flex items-center gap-3">
-        <Crown className="w-5 h-5 text-yellow-500" />
-        <div>
-          <h3 className="font-semibold text-gray-900">{getTierDisplay()}</h3>
-          {subscriptionStatus && (
-            <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getStatusColor()}`}>
-              {subscriptionStatus.charAt(0).toUpperCase() + subscriptionStatus.slice(1)}
-            </span>
-          )}
-        </div>
-      </div>
+    <div className={`inline-flex items-center px-3 py-1.5 rounded-full ${subscription.bgColor}`}>
+      <Icon className={`w-4 h-4 mr-2 ${subscription.color}`} />
+      <span className={`text-sm font-medium ${subscription.color}`}>
+        {subscription.name}
+      </span>
     </div>
   );
-};
+}
