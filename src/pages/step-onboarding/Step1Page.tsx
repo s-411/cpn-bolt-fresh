@@ -155,6 +155,8 @@ export function Step1Page() {
                 onChange={(e) => handleChange('age', parseInt(e.target.value) || 18)}
                 min="18"
                 max="120"
+                inputMode="numeric"
+                pattern="[0-9]*"
                 className={`w-full bg-cpn-dark border ${
                   errors.age ? 'border-red-500' : 'border-gray-700'
                 } rounded-lg px-4 py-3 text-white focus:outline-none focus:border-cpn-yellow transition-colors`}
@@ -199,8 +201,9 @@ export function Step1Page() {
                   placeholder="Ethnicity (optional)"
                   value={formData.ethnicity || ''}
                   onChange={(e) => handleChange('ethnicity', e.target.value)}
-                  className="w-full bg-cpn-dark border border-gray-700 rounded-lg px-4 py-2 text-white text-sm focus:outline-none focus:border-cpn-yellow transition-colors"
+                  className="w-full bg-cpn-dark border border-gray-700 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-cpn-yellow transition-colors"
                   disabled={submitting}
+                  autoComplete="off"
                 />
 
                 <input
@@ -208,8 +211,9 @@ export function Step1Page() {
                   placeholder="Hair Color (optional)"
                   value={formData.hair_color || ''}
                   onChange={(e) => handleChange('hair_color', e.target.value)}
-                  className="w-full bg-cpn-dark border border-gray-700 rounded-lg px-4 py-2 text-white text-sm focus:outline-none focus:border-cpn-yellow transition-colors"
+                  className="w-full bg-cpn-dark border border-gray-700 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-cpn-yellow transition-colors"
                   disabled={submitting}
+                  autoComplete="off"
                 />
 
                 <input

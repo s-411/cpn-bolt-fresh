@@ -128,12 +128,13 @@ describe('Step3Page', () => {
     const passwordInput = screen.getByLabelText(/Password/) as HTMLInputElement;
     expect(passwordInput.type).toBe('password');
 
-    const toggleButton = screen.getByRole('button', { name: '' });
+    const toggleButton = screen.getByRole('button', { name: /Show password/ });
     fireEvent.click(toggleButton);
 
     expect(passwordInput.type).toBe('text');
 
-    fireEvent.click(toggleButton);
+    const hideButton = screen.getByRole('button', { name: /Hide password/ });
+    fireEvent.click(hideButton);
     expect(passwordInput.type).toBe('password');
   });
 

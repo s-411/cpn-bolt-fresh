@@ -212,6 +212,8 @@ export function Step3Page() {
                 id="email"
                 value={formData.email}
                 onChange={(e) => handleChange('email', e.target.value)}
+                autoComplete="email"
+                inputMode="email"
                 className={`w-full bg-cpn-dark border ${
                   errors.email ? 'border-red-500' : 'border-gray-700'
                 } rounded-lg px-4 py-3 text-white focus:outline-none focus:border-cpn-yellow transition-colors`}
@@ -231,6 +233,7 @@ export function Step3Page() {
                   id="password"
                   value={formData.password}
                   onChange={(e) => handleChange('password', e.target.value)}
+                  autoComplete="new-password"
                   className={`w-full bg-cpn-dark border ${
                     errors.password ? 'border-red-500' : 'border-gray-700'
                   } rounded-lg px-4 py-3 pr-12 text-white focus:outline-none focus:border-cpn-yellow transition-colors`}
@@ -240,8 +243,9 @@ export function Step3Page() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-cpn-gray hover:text-white transition-colors"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-cpn-gray hover:text-white transition-colors p-2"
                   disabled={submitting}
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
                 >
                   {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                 </button>

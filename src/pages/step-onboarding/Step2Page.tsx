@@ -170,6 +170,7 @@ export function Step2Page() {
                 onChange={(e) => handleChange('amount_spent', parseFloat(e.target.value) || 0)}
                 min="0"
                 step="0.01"
+                inputMode="decimal"
                 className={`w-full bg-cpn-dark border ${
                   errors.amount_spent ? 'border-red-500' : 'border-gray-700'
                 } rounded-lg px-4 py-3 text-white focus:outline-none focus:border-cpn-yellow transition-colors`}
@@ -192,6 +193,8 @@ export function Step2Page() {
                 onChange={(e) => handleChange('duration_minutes', parseInt(e.target.value) || 0)}
                 min="1"
                 max="1440"
+                inputMode="numeric"
+                pattern="[0-9]*"
                 className={`w-full bg-cpn-dark border ${
                   errors.duration_minutes ? 'border-red-500' : 'border-gray-700'
                 } rounded-lg px-4 py-3 text-white focus:outline-none focus:border-cpn-yellow transition-colors`}
@@ -218,6 +221,8 @@ export function Step2Page() {
                 onChange={(e) => handleChange('number_of_nuts', parseInt(e.target.value) || 0)}
                 min="0"
                 max="99"
+                inputMode="numeric"
+                pattern="[0-9]*"
                 className={`w-full bg-cpn-dark border ${
                   errors.number_of_nuts ? 'border-red-500' : 'border-gray-700'
                 } rounded-lg px-4 py-3 text-white focus:outline-none focus:border-cpn-yellow transition-colors`}
