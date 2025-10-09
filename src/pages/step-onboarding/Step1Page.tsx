@@ -13,10 +13,6 @@ export function Step1Page() {
     name: '',
     age: 21,
     rating: 6.0,
-    ethnicity: '',
-    hair_color: '',
-    location_city: '',
-    location_country: '',
   });
 
   useEffect(() => {
@@ -190,50 +186,6 @@ export function Step1Page() {
                 <span>10.0</span>
               </div>
               {errors.rating && <p className="text-red-500 text-sm mt-1">{errors.rating}</p>}
-            </div>
-
-            <div className="pt-4 border-t border-gray-800">
-              <p className="text-sm text-cpn-gray mb-3">Optional Details</p>
-
-              <div className="space-y-3">
-                <input
-                  type="text"
-                  placeholder="Ethnicity (optional)"
-                  value={formData.ethnicity || ''}
-                  onChange={(e) => handleChange('ethnicity', e.target.value)}
-                  className="w-full bg-cpn-dark border border-gray-700 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-cpn-yellow transition-colors"
-                  disabled={submitting}
-                  autoComplete="off"
-                />
-
-                <input
-                  type="text"
-                  placeholder="Hair Color (optional)"
-                  value={formData.hair_color || ''}
-                  onChange={(e) => handleChange('hair_color', e.target.value)}
-                  className="w-full bg-cpn-dark border border-gray-700 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-cpn-yellow transition-colors"
-                  disabled={submitting}
-                  autoComplete="off"
-                />
-
-                <input
-                  type="text"
-                  placeholder="City (optional)"
-                  value={formData.location_city || ''}
-                  onChange={(e) => handleChange('location_city', e.target.value)}
-                  className="w-full bg-cpn-dark border border-gray-700 rounded-lg px-4 py-2 text-white text-sm focus:outline-none focus:border-cpn-yellow transition-colors"
-                  disabled={submitting}
-                />
-
-                <input
-                  type="text"
-                  placeholder="Country (optional)"
-                  value={formData.location_country || ''}
-                  onChange={(e) => handleChange('location_country', e.target.value)}
-                  className="w-full bg-cpn-dark border border-gray-700 rounded-lg px-4 py-2 text-white text-sm focus:outline-none focus:border-cpn-yellow transition-colors"
-                  disabled={submitting}
-                />
-              </div>
             </div>
 
             <button
