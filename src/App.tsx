@@ -21,11 +21,13 @@ import { Leaderboards } from './pages/Leaderboards';
 import { OnboardingPage } from './pages/OnboardingPage';
 import { UpgradePage } from './pages/UpgradePage';
 import { CheckoutSuccessPage } from './pages/CheckoutSuccessPage';
+import { StartPage } from './pages/step-onboarding/StartPage';
 import { Step1Page } from './pages/step-onboarding/Step1Page';
 import { Step2Page } from './pages/step-onboarding/Step2Page';
 import { Step3Page } from './pages/step-onboarding/Step3Page';
 import { Step4Page } from './pages/step-onboarding/Step4Page';
 import { WelcomePremiumPage } from './pages/step-onboarding/WelcomePremiumPage';
+import { OnboardingRouter } from './pages/step-onboarding/OnboardingRouter';
 import { AddGirlModal } from './components/AddGirlModal';
 import { AddDataModal } from './components/AddDataModal';
 import { EditGirlModal } from './components/EditGirlModal';
@@ -778,6 +780,8 @@ function App() {
     <AuthProvider>
       <Routes>
         <Route path="/onboarding/*" element={<OnboardingPage />} />
+        <Route path="/start" element={<StartPage />} />
+        <Route path="/onboarding-flow" element={<OnboardingRouter />} />
         <Route path="/step-1" element={<Step1Page />} />
         <Route path="/step-2" element={<Step2Page />} />
         <Route path="/step-3" element={<Step3Page />} />
